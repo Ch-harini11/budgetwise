@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>BudgetWise | Overview</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:Poppins;
+  background:#f4f6f9;
+}
+
+.layout{ display:flex; }
+
+.sidebar{
+  width:230px;
+  height:100vh;
+  background:white;
+  padding:20px;
+  box-shadow:2px 0 10px rgba(0,0,0,0.05);
+}
+
+.nav{
+  display:block;
+  padding:12px;
+  margin:8px 0;
+  border-radius:10px;
+  text-decoration:none;
+  color:#555;
+}
+
+.nav.active{
+  background:#6c63ff;
+  color:white;
+}
+
+.main{
+  flex:1;
+  padding:30px;
+}
+
+.card{
+  background:white;
+  padding:25px;
+  border-radius:16px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.08);
+  margin-bottom:20px;
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 12px 30px rgba(108,99,255,0.25);
+}
+
+.summary{
+  display:flex;
+  gap:20px;
+}
+
+.box{
+  flex:1;
+  padding:20px;
+  border-radius:14px;
+  color:white;
+  font-weight:600;
+  background:linear-gradient(135deg,#6c63ff,#8f7cff);
+}
+
+button{
+  background:#6c63ff;
+  color:white;
+  border:none;
+  padding:10px 15px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* ===== DARK MODE ===== */
+
+body.dark{
+  background:#121212;
+  color:#f1f1f1;
+}
+
+/* Sidebar */
+body.dark .sidebar{
+  background:#1e1e2f;
+}
+
+/* Cards */
+body.dark .card{
+  background:#1f1f2f;
+  color:white;
+}
+
+/* Summary boxes keep gradient but glow more */
+body.dark .box{
+  box-shadow:0 6px 20px rgba(108,99,255,0.5);
+}
+
+/* Text */
+body.dark h2,
+body.dark h3,
+body.dark p{
+  color:#f1f1f1;
+}
+
+/* Inputs */
+body.dark input{
+  background:#2a2a3d;
+  color:white;
+  border:1px solid #444;
+}
+
+/* Nav links */
+body.dark .nav{
+  color:#ddd;
+}
+
+body.dark .nav:hover{
+  background:#2a2a3d;
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <h2 style="color:#6c63ff;">BudgetWise</h2>
+  <a href="overview.html" class="nav active">Overview</a>
+  <a href="dashboard.html" class="nav">Dashboard</a>
+  <a href="profile.html" class="nav">Profile</a>
+</aside>
+
+<div class="main">
+<div style="text-align:right; margin-bottom:15px;">
+  <button onclick="toggleTheme()">🌙 Toggle Theme</button>
+</div>
+<button onclick="downloadPDF()">Export Report</button>
+<canvas id="reportChart" width="400" height="200" style="display:none;"></canvas>
+<canvas id="barChartPDF" width="400" height="200" style="display:none;"></canvas>
+<canvas id="pieChartPDF" width="400" height="200" style="display:none;"></canvas>
+<canvas id="lineChartPDF" width="400" height="200" style="display:none;"></canvas>
+<div class="card">
+<h3>Finance Assistant 🤖</h3>
+<input id="botInput" placeholder="Ask about budget..." style="width:70%;padding:10px;">
+<button onclick="askBot()">Ask</button>
+<p id="botReply"></p>
+</div>
+
+<div class="card">
+<h3>Predicted Savings 📈</h3>
+<p id="prediction"></p>
+</div>
+
+<h2>Overview</h2>
+
+<div class="summary">
+<div class="box" id="totalIncome">Total Income ₹0</div>
+<div class="box" id="monthlySpend">Monthly Spend ₹0</div>
+<div class="box" id="remaining">Remaining ₹0</div>
+<div class="box" id="goalBox">Goal ₹0</div>
+</div>
+
+<div class="card">
+<h3>Monthly Spending</h3>
+<canvas id="chart"></canvas>
+</div>
+
+</div>
+</div>
+
+<script>
+const profile = JSON.parse(localStorage.getItem("profile")) || {};
+const expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+const income = (profile.primaryIncome||0)+(profile.additionalIncome||0);
+const goal = profile.goal||0;
+
+let monthly=0;
+let months=Array(12).fill(0);
+
+expenses.forEach(e=>{
+ const d=new Date(e.date);
+ months[d.getMonth()]+=e.amount;
+
+ const now=new Date();
+ if(d.getMonth()==now.getMonth() && d.getFullYear()==now.getFullYear()){
+   monthly+=e.amount;
+ }
+});
+
+const totalExpenses = expenses.reduce((s,e)=>s+e.amount,0);
+
+document.getElementById("totalIncome").innerText="Total Income ₹"+income;
+document.getElementById("monthlySpend").innerText="Monthly Spend ₹"+monthly;
+document.getElementById("remaining").innerText="Remaining ₹"+(income-monthly);
+document.getElementById("goalBox").innerText="Goal ₹"+goal;
+
+new Chart(document.getElementById("chart"),{
+ type:"line",
+ data:{
+  labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+  datasets:[{label:"Expenses",data:months,borderWidth:3}]
+ }
+});
+
+function predictSavings(){
+ const now=new Date();
+ const daily=monthly/now.getDate();
+ const days=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+ return "Predicted savings ₹"+Math.max(income-daily*days,0);
+}
+document.getElementById("prediction").innerText=predictSavings();
+
+function downloadPDF(){
+ const { jsPDF } = window.jspdf;
+ const doc = new jsPDF();
+
+ doc.text("BudgetWise Report",20,20);
+ doc.text("Income: ₹"+income,20,40);
+ doc.text("Expenses: ₹"+totalExpenses,20,50);
+ doc.text("Savings: ₹"+(income-totalExpenses),20,60);
+
+ doc.save("BudgetReport.pdf");
+}
+
+function askBot(){
+ const q=document.getElementById("botInput").value.toLowerCase();
+ let r="Track daily expenses!";
+ if(q.includes("food")) r="Food spending high. Try cooking at home.";
+ if(q.includes("save")) r="Use 50-30-20 rule.";
+ document.getElementById("botReply").innerText=r;
+}
+
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+
+  localStorage.setItem(
+    "theme",
+    document.body.classList.contains("dark")
+  );
+}
+
+/* Load saved theme */
+if(localStorage.getItem("theme")==="true"){
+  document.body.classList.add("dark");
+}
+
+function createReportChart(){
+  const totalExpenses = expenses.reduce((s,e)=>s+e.amount,0);
+  const savings = income - totalExpenses;
+
+  const ctx = document.getElementById("reportChart");
+
+  return new Chart(ctx,{
+    type:"bar",
+    data:{
+      labels:["Income","Expenses","Savings"],
+      datasets:[{
+        label:"₹ Amount",
+        data:[income,totalExpenses,savings],
+        backgroundColor:[
+          "#6c63ff",
+          "#ff6b6b",
+          "#2ecc71"
+        ]
+      }]
+    },
+    options:{
+      responsive:false,
+      animation:false
+    }
+  });
+}
+function getAIInsights(){
+  const totalExpenses = expenses.reduce((s,e)=>s+e.amount,0);
+
+  if(totalExpenses < income*0.5)
+    return "Great saving habit! You are managing money well.";
+
+  if(totalExpenses < income*0.8)
+    return "Spending is moderate. Try to optimize small expenses.";
+
+  return "High spending detected. Consider reducing food & shopping costs.";
+}
+async function downloadPDF(){
+  const { jsPDF } = window.jspdf;
+
+  const totalExpenses=getTotalExpenses();
+  const savings=income-totalExpenses;
+  const top=getTopCategory();
+
+  const charts=createCharts();
+
+  await new Promise(r=>setTimeout(r,600));
+
+  const barImg=barChartPDF.toDataURL();
+  const pieImg=pieChartPDF.toDataURL();
+  const lineImg=lineChartPDF.toDataURL();
+
+  const doc=new jsPDF();
+
+  /* ===== HEADER ===== */
+  doc.setFillColor(108,99,255);
+  doc.rect(0,0,210,20,"F");
+
+  doc.setTextColor(255);
+  doc.setFontSize(18);
+  doc.text("BudgetWise Financial Report",20,14);
+
+  doc.setTextColor(0);
+
+  /* ===== SUMMARY ===== */
+  doc.setFontSize(14);
+  doc.text(`Income: ₹${income}`,20,35);
+  doc.text(`Expenses: ₹${totalExpenses}`,20,45);
+  doc.text(`Savings: ₹${savings}`,20,55);
+
+  /* ===== AI INSIGHTS ===== */
+  doc.setFontSize(12);
+  doc.text("AI Insights:",20,70);
+  doc.text(`• Top spending category: ${top.top} (₹${top.max})`,20,80);
+
+  if(totalExpenses<income*0.5)
+    doc.text("• Excellent saving habits!",20,90);
+  else if(totalExpenses<income*0.8)
+    doc.text("• Moderate spending detected.",20,90);
+  else
+    doc.text("• High spending — consider reducing costs.",20,90);
+
+  /* ===== CHARTS ===== */
+  doc.addImage(barImg,"PNG",20,105,170,60);
+  doc.addPage();
+
+  doc.text("Category Distribution",20,20);
+  doc.addImage(pieImg,"PNG",20,30,170,80);
+
+  doc.text("Monthly Spending Trend",20,125);
+  doc.addImage(lineImg,"PNG",20,135,170,80);
+
+  doc.save("BudgetWise_Report.pdf");
+
+  charts.bar.destroy();
+  charts.pie.destroy();
+  charts.line.destroy();
+}
+
+function getTotalExpenses(){
+  return expenses.reduce((s,e)=>s+e.amount,0);
+}
+
+function getCategoryTotals(){
+  const map={};
+  expenses.forEach(e=>{
+    map[e.category]=(map[e.category]||0)+e.amount;
+  });
+  return map;
+}
+
+function getMonthlyTotals(){
+  const months=Array(12).fill(0);
+  expenses.forEach(e=>{
+    const d=new Date(e.date);
+    months[d.getMonth()]+=e.amount;
+  });
+  return months;
+}
+
+function getTopCategory(){
+  const map=getCategoryTotals();
+  let top="None", max=0;
+
+  for(let c in map){
+    if(map[c]>max){
+      max=map[c];
+      top=c;
+    }
+  }
+  return {top,max};
+}
+function createCharts(){
+  const totalExpenses=getTotalExpenses();
+  const savings=income-totalExpenses;
+
+  /* BAR */
+  const bar=new Chart(barChartPDF,{
+    type:"bar",
+    data:{
+      labels:["Income","Expenses","Savings"],
+      datasets:[{
+        data:[income,totalExpenses,savings],
+        backgroundColor:["#6c63ff","#ff6b6b","#2ecc71"]
+      }]
+    },
+    options:{responsive:false,animation:false}
+  });
+
+  /* PIE */
+  const cat=getCategoryTotals();
+  const pie=new Chart(pieChartPDF,{
+    type:"pie",
+    data:{
+      labels:Object.keys(cat),
+      datasets:[{data:Object.values(cat)}]
+    },
+    options:{responsive:false,animation:false}
+  });
+
+  /* LINE */
+  const line=new Chart(lineChartPDF,{
+    type:"line",
+    data:{
+      labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+      datasets:[{data:getMonthlyTotals()}]
+    },
+    options:{responsive:false,animation:false}
+  });
+
+  return {bar,pie,line};
+}
+</script>
+
+</body>
+</html>
