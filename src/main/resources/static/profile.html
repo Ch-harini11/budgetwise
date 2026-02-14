@@ -679,7 +679,7 @@ font-size:14px;
 </div>
 
 
-
+<script src="budgetManager.js"></script>
 <script>
 
 /* THEME */
@@ -726,32 +726,52 @@ photoInput.onchange=e=>{
 
 /* SAVE PROFILE */
 function saveProfile(){
+
   const data={
     name:nameInput.value,
-    email:emailInput.value
+    email:emailInput.value,
+    mobile:mobileInput.value,
+    gender:genderInput.value,
+    birthday:birthdayInput.value,
+    job:jobInput.value,
+    income:incomeInput.value,
+    address:addressInput.value
   };
 
-  localStorage.setItem("userData",JSON.stringify(data));
+  localStorage.setItem("userData", JSON.stringify(data));
 
-  alert("Saved ✅");
+  alert("Profile Saved ✅");
   loadProfile();
 }
-
 /* LOAD PROFILE */
 function loadProfile(){
-  const d=JSON.parse(localStorage.getItem("userData"))||{};
-  pName.innerText=d.name||"User";
-  pEmail.innerText=d.email||"No email";
 
-  const pic=localStorage.getItem("profilePic");
-  if(pic) profilePic.src=pic;
+  const d = JSON.parse(localStorage.getItem("userData")) || {};
+
+  pName.innerText = d.name || "User";
+  pEmail.innerText = d.email || "No email";
+
+  nameInput.value = d.name || "";
+  emailInput.value = d.email || "";
+  mobileInput.value = d.mobile || "";
+  genderInput.value = d.gender || "";
+  birthdayInput.value = d.birthday || "";
+  jobInput.value = d.job || "";
+  incomeInput.value = d.income || "";
+  addressInput.value = d.address || "";
+
+  const pic = localStorage.getItem("profilePic");
+  if(pic) profilePic.src = pic;
 }
 
 loadProfile();
 
 /* LOGOUT */
 function logout(){
-  localStorage.clear();
+  // remove only session info if needed
+  localStorage.removeItem("userSession");
+
+  // DO NOT clear profile data
   location="index1.html";
 }
 

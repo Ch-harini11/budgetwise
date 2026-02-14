@@ -193,8 +193,8 @@ header{
 .container{
   max-width:1000px;
   margin:40px auto;
+  padding:0 20px;
 }
-
 
 /* CARD */
 .card{
@@ -348,8 +348,10 @@ body.dark{
 }
 
 body{
+  font-family:Segoe UI;
   background:linear-gradient(135deg,#6c63ff,#2196f3);
   min-height:100vh;
+  margin:0;
 }
 
 body.dark .card{
@@ -366,17 +368,19 @@ body.dark select{
 /* SETTINGS CARDS UPGRADE */
 
 .settings-card{
-  background:linear-gradient(145deg,#ffffff,#f3f4ff);
-  padding:25px;
-  border-radius:18px;
-  box-shadow:0 15px 35px rgba(0,0,0,0.08);
-  margin-bottom:25px;
+  width:100%;
+  max-width:950px;
+  margin:25px auto;
+  padding:30px;
+
+  background:white;
+  border-radius:20px;
+  box-shadow:0 15px 35px rgba(0,0,0,0.1);
   transition:0.3s;
 }
 
 .settings-card:hover{
   transform:translateY(-5px);
-  box-shadow:0 20px 40px rgba(0,0,0,0.12);
 }
 
 .settings-card h3{
@@ -501,14 +505,6 @@ body.dark .budget-pro{
   max-width:950px;
   margin:40px auto;
   padding:30px;
-  border-radius:22px;
-
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(14px);
-
-  box-shadow:
-    0 20px 50px rgba(0,0,0,0.15),
-    inset 0 1px 0 rgba(255,255,255,0.6);
 }
 
 .privacy-note{
@@ -557,6 +553,23 @@ body.dark .budget-ai{
   max-width:700px;
 }
 
+#backupHistory{
+  list-style:none;
+  padding:0;
+  margin-top:10px;
+}
+
+#backupHistory li{
+  background:#f4f6ff;
+  padding:10px 14px;
+  border-radius:10px;
+  margin-bottom:8px;
+  font-size:14px;
+}
+
+body.dark #backupHistory li{
+  background:#2a2a3d;
+}
 </style>
 </head>
 
@@ -568,28 +581,8 @@ body.dark .budget-ai{
   <button class="theme-btn" onclick="toggleTheme()">🌙</button>
 </header>
 
-<div class="container">
 
-  <!-- PROFILE SETTINGS -->
-  <div class="settings-card">
-
-  <h3>🔒 Change Password</h3>
-
-  <label>Old Password</label>
-  <input type="password" id="oldPass">
-
-  <label>New Password</label>
-  <input type="password" id="newPass">
-
-  <label>Confirm New Password</label>
-  <input type="password" id="confirmPass">
-
-  <button class="save-btn" onclick="changePassword()">
-    Update Password
-  </button>
-
-</div>
-
+<div class="container"></div>
 <div class="settings-card">
 <h3>🌍 Language</h3>
 
@@ -735,7 +728,7 @@ body.dark .budget-ai{
 
 
 
-
+</div>
 </div>
 
 <script>
@@ -745,8 +738,28 @@ function toggleTheme(){
 }
 
 window.onload=()=>{
+
+  // Theme load
   if(localStorage.getItem("theme")==="true"){
     document.body.classList.add("dark");
+  }
+
+  // Budget load
+  const savedBudget =
+    localStorage.getItem("budgetAmount");
+
+  if(savedBudget){
+    document.getElementById("monthlyBudget").value =
+      savedBudget;
+  }
+
+  // Currency load
+  const savedCurrency =
+    localStorage.getItem("currency");
+
+  if(savedCurrency){
+    document.getElementById("currency").value =
+      savedCurrency;
   }
 };
 
@@ -754,18 +767,26 @@ function goBack(){
   window.location.href="dashboard.html";
 }
 
-// Default password (first time)
+
+
+// Default password (first login)
 if(!localStorage.getItem("userPass")){
   localStorage.setItem("userPass","1234");
 }
 
 function changePassword(){
 
-  const oldP = document.getElementById("oldPass").value;
-  const newP = document.getElementById("newPass").value;
-  const confirmP = document.getElementById("confirmPass").value;
+  const oldP =
+    document.getElementById("oldPass").value.trim();
 
-  const saved = localStorage.getItem("userPass");
+  const newP =
+    document.getElementById("newPass").value.trim();
+
+  const confirmP =
+    document.getElementById("confirmPass").value.trim();
+
+  const saved =
+    localStorage.getItem("userPass");
 
   if(oldP !== saved){
     alert("❌ Old password incorrect");
@@ -778,28 +799,16 @@ function changePassword(){
   }
 
   if(newP !== confirmP){
-    alert("New passwords do not match");
+    alert("Passwords do not match");
     return;
   }
 
   localStorage.setItem("userPass", newP);
 
-  alert("✅ Password Updated Successfully");
-
-  document.getElementById("oldPass").value="";
-  document.getElementById("newPass").value="";
-  document.getElementById("confirmPass").value="";
+  alert("✅ Password Updated");
 }
-
 </script>
-<script>
-function exportData(){
-  alert("✅ Backup exported successfully!");
-}
 
-function importData(){
-  alert("📂 Import feature coming soon!");
-}
 </script>
 <script>
 
@@ -815,23 +824,57 @@ if(localStorage.getItem("autoBackup")==="true"){
 }
 
 // EXPORT
+/* ===== EXPORT FULL BACKUP ===== */
 function exportData(){
-  const data = JSON.stringify(localStorage);
-  const blob = new Blob([data]);
+
+  const allData = {};
+
+  // Save EVERYTHING from localStorage
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    allData[key] = localStorage.getItem(key);
+  }
+
+  const blob = new Blob(
+    [JSON.stringify(allData,null,2)],
+    {type:"application/json"}
+  );
+
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download="budgetwise-backup.json";
+  a.download = "budgetwise-backup.json";
   a.click();
 
-  addHistory("Backup Exported");
+  alert("✅ Full Backup Downloaded");
 }
 
-// IMPORT (demo)
+/* ===== IMPORT FULL BACKUP ===== */
 function importData(){
-  alert("Import feature demo 😄");
-  addHistory("Backup Imported");
-}
 
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "application/json";
+
+  input.onchange = e=>{
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = evt=>{
+      const data = JSON.parse(evt.target.result);
+
+      Object.keys(data).forEach(k=>{
+        localStorage.setItem(k,data[k]);
+      });
+
+      alert("✅ Backup Restored Successfully");
+      location.reload();
+    };
+
+    reader.readAsText(file);
+  };
+
+  input.click();
+}
 // CLOUD SYNC
 function cloudSync(){
   alert("☁️ Synced to cloud (simulation)");
@@ -847,27 +890,27 @@ function addHistory(text){
 }
 
 </script>
+<script src="budgetManager.js"></script>
 <script>
 function saveBudget(){
 
-  const amt = Number(
-    document.getElementById("monthlyBudget").value
-  );
+  const amt =
+    document.getElementById("monthlyBudget").value;
 
   const cur =
     document.getElementById("currency").value;
 
-  if(!amt || amt <= 0){
-    alert("Enter a valid budget amount");
-    return;
-  }
+  BudgetManager.saveSettings({
+    monthlyIncome: amt,
+    currency: cur
+  });
 
-  localStorage.setItem("budgetAmount", amt);
-  localStorage.setItem("currency", cur);
+  BudgetManager.updateBudgetRing(
+    "budgetProgress",
+    "budgetPercent"
+  );
 
-  updateBudgetUI(amt);
-
-  alert("✅ Budget Saved Successfully");
+  alert("✅ Settings saved & synced!");
 }
 
 /* UPDATE UI */

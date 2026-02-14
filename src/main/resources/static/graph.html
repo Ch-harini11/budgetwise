@@ -158,6 +158,34 @@ body.dark h3{
 .chart-box{
   transition:0.3s;
 }
+/* PRO BACKUP VISIBILITY FIX */
+
+.backup-card{
+  background:linear-gradient(145deg,#ffffff,#eef1ff);
+  color:#222;
+}
+
+.backup-card h3,
+.backup-card p,
+.backup-card span,
+.backup-card div,
+.backup-card li{
+  color:#222;
+}
+
+/* DARK MODE FIX */
+body.dark .backup-card{
+  background:#1f1f2f;
+  color:white;
+}
+
+body.dark .backup-card h3,
+body.dark .backup-card p,
+body.dark .backup-card span,
+body.dark .backup-card div,
+body.dark .backup-card li{
+  color:white;
+}
 
 .chart-box:hover{
   transform:translateY(-6px);
@@ -219,7 +247,7 @@ window.onload = async () => {
 
 
 </script>
-
+<script src="budgetManager.js"></script>
 <!-- ===== MONTHLY ===== -->
 <div class="container" id="monthly">
   <div class="cards">
@@ -319,25 +347,46 @@ window.onload = async () => {
 
 
 <script>
-/* ===== DATA ===== */
-<!-- const expenses = JSON.parse(localStorage.getItem("expenses")) || []; -->
-const profile = JSON.parse(localStorage.getItem("profile")) || {};
-const income =
-  (Number(profile.primaryIncome)||0) +
-  (Number(profile.additionalIncome)||0);
+/* ========= THEME ========= */
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem(
+    "theme",
+    document.body.classList.contains("dark")
+  );
+}
 
-const goal = profile.goal || 0;
+/* ========= APPLY THEME + LOAD DATA ========= */
+window.onload = async () => {
 
+  if(localStorage.getItem("theme") === "true"){
+    document.body.classList.add("dark");
+  }
+
+  // Always refresh expenses from backend
+  const userId = localStorage.getItem("userId") || "demoUser";
+
+  const res = await fetch(
+    `http://localhost:8081/expenses/${userId}`
+  );
+
+  const data = await res.json();
+  localStorage.setItem("expenses", JSON.stringify(data));
+
+  // Default tab
+  showMonthly(document.querySelector(".tab.active"));
+};
+
+
+/* ========= CHART STORAGE ========= */
 let charts = {};
 
 function createChart(id, config) {
-  if (charts[id]) {
-    charts[id].destroy();
-  }
+  if (charts[id]) charts[id].destroy();
   charts[id] = new Chart(document.getElementById(id), config);
 }
 
-/* ===== TAB CONTROL ===== */
+/* ========= TAB CONTROL ========= */
 function activateTab(el, viewId) {
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
   el.classList.add("active");
@@ -346,36 +395,23 @@ function activateTab(el, viewId) {
   document.getElementById(viewId).classList.remove("hidden");
 }
 
-async function loadExpensesFromServer(){
-
-  const userId = localStorage.getItem("userId") || "demoUser";
-
-  const res = await fetch(
-    `http://localhost:8081/expenses/${userId}`
-  );
-
-  const data = await res.json();
-
-  // store latest copy
-  localStorage.setItem("expenses", JSON.stringify(data));
-
-  return data;
+/* ========= FORMAT ========= */
+function formatINR(num){
+  return "₹" + Number(num).toLocaleString("en-IN");
 }
 
-
-/* ===== MONTHLY ===== */
+/* =================================================
+                MONTHLY VIEW
+================================================= */
 function showMonthly(el) {
+
   activateTab(el, "monthly");
 
-  const expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-
-  const profile = JSON.parse(localStorage.getItem("profile")) || {};
-  const income =
-    (Number(profile.primaryIncome)||0) +
-    (Number(profile.additionalIncome)||0);
+  const expenses = BudgetManager.getExpenses();
+  const income   = BudgetManager.getMonthlyIncome();
+  const total    = BudgetManager.getMonthlySpent();
 
   const now = new Date();
-  let total = 0;
   const categoryMap = {};
   const weekly = [0,0,0,0];
 
@@ -385,12 +421,10 @@ function showMonthly(el) {
     if(d.getMonth()===now.getMonth() &&
        d.getFullYear()===now.getFullYear()){
 
-      total += e.amount;
-
       categoryMap[e.category] =
         (categoryMap[e.category]||0)+e.amount;
 
-      const week=Math.min(3,Math.floor(d.getDate()/7));
+      const week = Math.min(3, Math.floor(d.getDate()/7));
       weekly[week]+=e.amount;
     }
   });
@@ -402,8 +436,10 @@ function showMonthly(el) {
     .innerText = formatINR(total);
 
   const percent = income ? (total/income)*100 : 0;
-  document.querySelector("#monthly .progress span").style.width = percent+"%";
+  document.querySelector("#monthly .progress span")
+    .style.width = percent+"%";
 
+  /* Charts */
   createChart("monthlyPie",{
     type:"doughnut",
     data:{
@@ -419,7 +455,11 @@ function showMonthly(el) {
     type:"line",
     data:{
       labels:["Week1","Week2","Week3","Week4"],
-      datasets:[{data:weekly,borderColor:"#6c63ff",fill:true}]
+      datasets:[{
+        data:weekly,
+        borderColor:"#6c63ff",
+        fill:true
+      }]
     }
   });
 
@@ -435,244 +475,140 @@ function showMonthly(el) {
   });
 }
 
-function formatINR(num){
-  return "₹" + Number(num).toLocaleString("en-IN");
-}
 
-/* ===== YEARLY ===== */
+/* =================================================
+                YEARLY VIEW
+================================================= */
 function showYearly(el) {
+
   activateTab(el, "yearly");
 
-  const expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-
-  const profile = JSON.parse(localStorage.getItem("profile")) || {};
-  const monthlyIncome =
-    (Number(profile.primaryIncome)||0) +
-    (Number(profile.additionalIncome)||0);
+  const expenses = BudgetManager.getExpenses();
+  const monthlyIncome = BudgetManager.getMonthlyIncome();
 
   const yearlyBudget = monthlyIncome * 12;
+  const yearlySpent  = BudgetManager.getYearlySpent();
 
   const now = new Date();
   const months = Array(12).fill(0);
   const categoryMap = {};
-  let yearlySpent = 0;
 
-  expenses.forEach(e => {
+  expenses.forEach(e=>{
     const d = new Date(e.date);
 
-    if (d.getFullYear() === now.getFullYear()) {
+    if(d.getFullYear()===now.getFullYear()){
       months[d.getMonth()] += e.amount;
-      yearlySpent += e.amount;
 
       categoryMap[e.category] =
-        (categoryMap[e.category] || 0) + e.amount;
+        (categoryMap[e.category]||0)+e.amount;
     }
   });
 
-  document.getElementById("yearlyBudget").innerText = formatINR(yearlyBudget);
-  document.getElementById("yearlySpent").innerText = formatINR(yearlySpent);
+  document.getElementById("yearlyBudget")
+    .innerText = formatINR(yearlyBudget);
 
-  createChart("yearlyLine", {
-    type: "line",
-    data: {
-      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-      datasets: [{
-        label: "Monthly Spend",
-        data: months,
-        borderColor: "#6c63ff",
-        backgroundColor: "rgba(108,99,255,0.15)",
-        fill: true
+  document.getElementById("yearlySpent")
+    .innerText = formatINR(yearlySpent);
+
+  createChart("yearlyLine",{
+    type:"line",
+    data:{
+      labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      datasets:[{
+        data:months,
+        borderColor:"#6c63ff",
+        fill:true
       }]
     }
   });
 
-  createChart("yearlyBar", {
-    type: "bar",
-    data: {
-      labels: Object.keys(categoryMap),
-      datasets: [{
-        data: Object.values(categoryMap),
-        backgroundColor: "#2ecc71"
+  createChart("yearlyBar",{
+    type:"bar",
+    data:{
+      labels:Object.keys(categoryMap),
+      datasets:[{
+        data:Object.values(categoryMap),
+        backgroundColor:"#2ecc71"
       }]
     }
   });
 }
 
 
+/* =================================================
+                OVERALL VIEW
+================================================= */
 function showOverall(el) {
+
   activateTab(el, "overall");
 
-  const profile = JSON.parse(localStorage.getItem("profile")) || {};
-  const monthlyIncome =
-  (Number(profile.primaryIncome)||0) +
-  (Number(profile.additionalIncome)||0);
+  const expenses = BudgetManager.getExpenses();
 
-  const yearlyIncome = monthlyIncome ;
+  const monthlyIncome = BudgetManager.getMonthlyIncome();
+  const yearlyTotal   = BudgetManager.getYearlySpent();
+  const remaining     = BudgetManager.getRemaining();
 
-  const now = new Date();
-  const expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-
-  let yearlyTotal = 0;
-  let categoryMap = {};
   let monthlyMap = {};
+  let categoryMap = {};
   const months = Array(12).fill(0);
 
-  expenses.forEach(e => {
+  expenses.forEach(e=>{
     const d = new Date(e.date);
-    yearlyTotal += e.amount;
 
     months[d.getMonth()] += e.amount;
 
     monthlyMap[d.getMonth()] =
-      (monthlyMap[d.getMonth()] || 0) + e.amount;
+      (monthlyMap[d.getMonth()]||0)+e.amount;
 
     categoryMap[e.category] =
-      (categoryMap[e.category] || 0) + e.amount;
+      (categoryMap[e.category]||0)+e.amount;
   });
 
-  const monthsCount = Object.keys(monthlyMap).length || 1;
-  const monthlyAvg = Math.round(yearlyTotal / monthsCount);
-  const remaining = Math.max(yearlyIncome - yearlyTotal, 0);
+  const monthsCount =
+    Object.keys(monthlyMap).length || 1;
 
-  document.getElementById("overallRemaining").innerText = formatINR(remaining);
-  document.getElementById("overallMonthlyAvg").innerText =formatINR(monthlyAvg);
-  document.getElementById("overallYearlyTotal").innerText = formatINR(yearlyTotal);
+  const monthlyAvg =
+    Math.round(yearlyTotal / monthsCount);
 
-  createChart("overallPie", {
-    type: "doughnut",
-    data: {
-      labels: Object.keys(categoryMap),
-      datasets: [{
-        data: Object.values(categoryMap),
-        backgroundColor: [
-          "#6c63ff","#2ecc71","#f39c12","#e74c3c","#9b59b6"
-        ]
-      }]
-    }
-  });
+  document.getElementById("overallRemaining")
+    .innerText = formatINR(remaining);
 
-  createChart("overallMonthlyLine", {
-    type: "line",
-    data: {
-      labels: Object.keys(monthlyMap).map(m => `Month ${Number(m)+1}`),
-      datasets: [{
-        data: Object.values(monthlyMap),
-        borderColor: "#2ecc71",
-        fill: true
-      }]
-    }
-  });
+  document.getElementById("overallMonthlyAvg")
+    .innerText = formatINR(monthlyAvg);
 
-  createChart("overallYearlyLine", {
-    type: "line",
-    data: {
-      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-      datasets: [{
-        data: months,
-        borderColor: "#6c63ff",
-        fill: true
-      }]
-    }
-  });
-}
+  document.getElementById("overallYearlyTotal")
+    .innerText = formatINR(yearlyTotal);
 
-
-/* ===== CHART HELPERS ===== */
-function resetChart(id){
-  if(charts[id]) charts[id].destroy();
-}
-async function loadExpenses(){
-  const userId = localStorage.getItem("userId") || "demoUser";
-
-  const res = await fetch(
-    `http://localhost:8081/expenses/${userId}`
-  );
-
-  const data = await res.json();
-
-  localStorage.setItem("expenses", JSON.stringify(data));
-
-  return data;
-}
-
-function drawPie(id, map){
-  resetChart(id);
-  charts[id] = new Chart(document.getElementById(id),{
-    type:"doughnut",
-    data:{
-      labels:Object.keys(map),
-      datasets:[{
-        data:Object.values(map),
-        backgroundColor:['#6c63ff','#2ecc71','#f39c12','#e74c3c','#9b59b6']
-      }]
-    }
-  });
-}
-
-function drawLine(id, spent){
-  resetChart(id);
-  charts[id] = new Chart(document.getElementById(id),{
+  createChart("overallMonthlyLine",{
     type:"line",
     data:{
-      labels:["Week 1","Week 2","Week 3","Week 4"],
+      labels:Object.keys(monthlyMap).map(m=>`Month ${Number(m)+1}`),
       datasets:[{
-        data:[spent/4, spent/4, spent/4, spent/4],
-        fill:true,
-        borderColor:"#6c63ff"
+        data:Object.values(monthlyMap),
+        borderColor:"#2ecc71",
+        fill:true
       }]
     }
   });
-}
 
-function drawLineChart(id, data){
-  resetChart(id);
-  charts[id] = new Chart(document.getElementById(id),{
+  createChart("overallYearlyLine",{
     type:"line",
     data:{
-      labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+      labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
       datasets:[{
-        data:data,
-        fill:true,
-        borderColor:"#6c63ff"
+        data:months,
+        borderColor:"#6c63ff",
+        fill:true
       }]
     }
   });
 }
 
-function drawBar(id, map){
-  resetChart(id);
-  charts[id] = new Chart(document.getElementById(id),{
-    type:"bar",
-    data:{
-      labels:Object.keys(map),
-      datasets:[{
-        data:Object.values(map),
-        backgroundColor:"#6c63ff"
-      }]
-    }
-  });
-}
 
-function drawBarChart(id, data){
-  resetChart(id);
-  charts[id] = new Chart(document.getElementById(id),{
-    type:"bar",
-    data:{
-      labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-      datasets:[{
-        data:data,
-        backgroundColor:"#6c63ff"
-      }]
-    }
-  });
-}
-
-/* ===== NAV ===== */
+/* ========= NAV ========= */
 function goBack(){
   window.location.href="dashboard.html";
 }
-
-/* ===== DEFAULT LOAD ===== */
 </script>
 
 

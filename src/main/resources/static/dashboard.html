@@ -542,6 +542,8 @@ body.dark th{
 .add-expense-card input::placeholder{
   color:#9ca3af;
 }
+
+
 </style>
 </head>
 
@@ -687,7 +689,7 @@ body.dark th{
 </div>
 
 <!-- KEEP ALL YOUR EXISTING JS BELOW THIS LINE -->
-
+<script src="budgetManager.js"></script>
 
 <script>
 
@@ -701,7 +703,9 @@ body.dark th{
   loadExpenses();
   showProfileInfo(); 
 };
-
+window.onload = () => {
+  BudgetManager.updateDashboardUI();
+};
 function goToReports(){
   const exp = JSON.parse(localStorage.getItem("expenses")) || [];
   localStorage.setItem("expenses", JSON.stringify(exp));
@@ -709,13 +713,17 @@ function goToReports(){
   window.location.href = "graph.html";
 }
 
-
-
-
 function toggleAI(){
   const box = document.getElementById("aiBox");
-  box.style.display = box.style.display === "block" ? "none" : "block";
+  box.style.display =
+    box.style.display==="block"?"none":"block";
+
+  if(box.style.display==="block"){
+    aiHelp("intro");
+  }
 }
+
+
 
 let currentLang = "en-IN";
 
@@ -1139,7 +1147,41 @@ async function addExpense() {
   }
 }
 
+function askAI(){
+  const input = document.getElementById("aiInput");
+  const msg = input.value.toLowerCase().trim();
 
+  if(!msg) return;
+
+  if(msg.includes("login"))
+    aiHelp("login");
+
+  else if(msg.includes("sign") || msg.includes("signup"))
+    aiHelp("signup");
+
+  else if(msg.includes("dashboard"))
+    aiHelp("dashboard");
+
+  else if(msg.includes("report") || msg.includes("chart"))
+    aiHelp("reports");
+
+  else if(msg.includes("profile") || msg.includes("income") || msg.includes("goal"))
+    aiHelp("profile");
+
+  else if(msg.includes("setting") || msg.includes("theme"))
+    aiHelp("settings");
+
+  else if(msg.includes("logout"))
+    aiHelp("logout");
+
+  else if(msg.includes("why"))
+    aiHelp("why");
+
+  else
+    aiHelp("intro");
+
+  input.value="";
+}
 
 
 function loadExpenses(){
@@ -1451,10 +1493,8 @@ margin-bottom:10px;
 <input id="aiInput" placeholder="Ask something..."
 style="width:100%;padding:8px;border-radius:8px;border:1px solid #ddd;">
 
-<button onclick="
-typeMessage(aiInput.value);
-speakResponse(aiInput.value);
-" style="margin-top:8px;width:100%;">
+<button onclick="askAI()" 
+style="margin-top:8px;width:100%;">
 Send
 </button>
 
