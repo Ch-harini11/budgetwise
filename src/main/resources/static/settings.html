@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Settings | BudgetWise</title>
+
+<style>
+:root{
+  --primary:#6c63ff;
+  --secondary:#a084ff;
+  --card:#ffffff;
+  --text:#2f2f2f;
+}
+/* PRO BUDGET CARD */
+
+.budget-pro{
+  background:linear-gradient(145deg,#ffffff,#eef1ff);
+  border-radius:20px;
+  box-shadow:0 15px 35px rgba(0,0,0,0.08);
+  transition:0.3s;
+}
+
+.budget-pro:hover{
+  transform:translateY(-6px);
+  box-shadow:0 25px 45px rgba(0,0,0,0.15);
+}
+
+.budget-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:15px;
+}
+
+.budget-icon{
+  font-size:26px;
+  background:linear-gradient(135deg,#FFD700,#FFA500);
+  padding:10px;
+  border-radius:12px;
+}
+
+.budget-sub{
+  font-size:13px;
+  opacity:0.7;
+}
+
+.budget-info{
+  margin-top:18px;
+  font-size:13px;
+  opacity:0.8;
+  line-height:1.6;
+}
+
+/* DARK MODE SUPPORT */
+
+body.dark .budget-pro{
+  background:#1f1f2f;
+}
+
+body{
+  font-family:Segoe UI;
+  background:#f4f6f8;
+  padding:40px;
+}
+.card{
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  max-width:500px;
+  margin:auto;
+}
+/* BACKUP CARD */
+.backup-card{
+  background:linear-gradient(145deg,#ffffff,#eef1ff);
+}
+
+body.dark .backup-card{
+  background:#1f1f2f;
+}
+
+/* HEADER */
+.backup-header{
+  display:flex;
+  gap:15px;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.backup-icon{
+  font-size:34px;
+}
+
+.backup-sub{
+  font-size:14px;
+  opacity:0.7;
+  margin-top:3px;
+}
+
+/* ACTIONS */
+.backup-actions{
+  display:flex;
+  gap:15px;
+  margin-top:15px;
+}
+
+.backup-btn{
+  flex:1;
+  padding:16px;
+  border:none;
+  border-radius:14px;
+  font-weight:600;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  transition:0.3s;
+}
+
+.backup-btn span{
+  font-size:12px;
+  opacity:0.8;
+}
+
+/* EXPORT */
+.export{
+  background:linear-gradient(135deg,#6c63ff,#8f7cff);
+  color:white;
+}
+
+.export:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 25px rgba(108,99,255,0.4);
+}
+
+/* IMPORT */
+.import{
+  background:white;
+  border:2px solid #6c63ff;
+  color:#6c63ff;
+}
+
+.import:hover{
+  background:#6c63ff;
+  color:white;
+}
+
+/* NOTE */
+.backup-note{
+  margin-top:15px;
+  font-size:13px;
+  opacity:0.7;
+}
+
+/* HEADER */
+header{
+  position:sticky;
+  top:0;
+  background:linear-gradient(90deg,#6c63ff,#8f7cff);
+  color:white;
+  padding:18px 26px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-shadow:0 6px 20px rgba(0,0,0,0.35);
+}
+
+.header-title{
+  font-size:20px;
+  font-weight:600;
+}
+
+.back-btn{
+  background:rgba(255,255,255,0.2);
+  border:none;
+  color:white;
+  padding:8px 14px;
+  border-radius:18px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.theme-btn{
+  background:rgba(255,255,255,0.2);
+  border:none;
+  color:white;
+  font-size:18px;
+  padding:8px 12px;
+  border-radius:50%;
+  cursor:pointer;
+}
+
+/* CONTAINER */
+.container{
+  max-width:1000px;
+  margin:40px auto;
+  padding:0 20px;
+}
+
+/* CARD */
+.card{
+  background:var(--card);
+  border-radius:18px;
+  padding:25px;
+  margin-bottom:25px;
+  box-shadow:0 18px 40px rgba(0,0,0,0.08);
+}
+
+.card h3{
+  margin-top:0;
+  margin-bottom:18px;
+}
+
+/* FORM */
+.row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+}
+.backup-card{
+  background:linear-gradient(145deg,#ffffff,#eef1ff);
+}
+
+body.dark .backup-card{
+  background:#1f1f2f;
+}
+
+.auto-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:15px 0;
+}
+
+/* SWITCH */
+.switch{
+  position:relative;
+  width:50px;
+  height:24px;
+}
+
+.switch input{opacity:0;}
+
+.slider{
+  position:absolute;
+  inset:0;
+  background:#ccc;
+  border-radius:20px;
+  cursor:pointer;
+}
+
+.slider:before{
+  content:"";
+  position:absolute;
+  width:18px;
+  height:18px;
+  background:white;
+  left:3px;
+  bottom:3px;
+  border-radius:50%;
+  transition:.3s;
+}
+
+input:checked + .slider{
+  background:#6c63ff;
+}
+
+input:checked + .slider:before{
+  transform:translateX(26px);
+}
+
+/* BUTTONS */
+.backup-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.backup-btn{
+  flex:1;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.export{
+  background:linear-gradient(135deg,#6c63ff,#8f7cff);
+  color:white;
+}
+
+.import{
+  border:2px solid #6c63ff;
+  background:white;
+  color:#6c63ff;
+}
+
+.cloud{
+  background:linear-gradient(135deg,#00c6ff,#0072ff);
+  color:white;
+}
+
+.badges{
+  margin:15px 0;
+  font-size:13px;
+  opacity:0.8;
+}
+
+#backupHistory{
+  font-size:14px;
+  opacity:0.8;
+}
+.budget-actions{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:25px;
+}
+
+
+input,select{
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  font-size:15px;
+}
+
+label{
+  font-size:14px;
+  margin-bottom:6px;
+  display:block;
+}
+
+.save-btn{
+  margin-top:18px;
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* DARK MODE */
+body.dark{
+  background:linear-gradient(135deg,#121212,#1e1e2f);
+}
+
+body{
+  font-family:Segoe UI;
+  background:linear-gradient(135deg,#6c63ff,#2196f3);
+  min-height:100vh;
+  margin:0;
+}
+
+body.dark .card{
+  background:#1f1f2f;
+  color:white;
+}
+
+body.dark input,
+body.dark select{
+  background:#2a2a3d;
+  color:white;
+  border:1px solid #444;
+}
+/* SETTINGS CARDS UPGRADE */
+
+.settings-card{
+  width:100%;
+  max-width:950px;
+  margin:25px auto;
+  padding:30px;
+
+  background:white;
+  border-radius:20px;
+  box-shadow:0 15px 35px rgba(0,0,0,0.1);
+  transition:0.3s;
+}
+
+.settings-card:hover{
+  transform:translateY(-5px);
+}
+
+.settings-card h3{
+  margin-bottom:15px;
+  color:#333;
+}
+
+.settings-card input,
+.settings-card select{
+  padding:12px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  width:100%;
+  margin-top:6px;
+  margin-bottom:14px;
+}
+
+
+/* DARK MODE */
+body.dark .budget-pro{
+  background:#1f1f2f;
+}
+.save-btn:hover{
+  opacity:0.9;
+  transform:scale(1.03);
+}
+/* PREMIUM BUDGET EFFECTS */
+
+/* CLEAN PREMIUM SAVE BUTTON */
+
+.budget-pro .save-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+
+  padding:12px 22px;
+  font-size:14px;
+  font-weight:600;
+
+  border-radius:12px;
+  border:none;
+  cursor:pointer;
+
+  background:linear-gradient(135deg,#6c63ff,#8f7cff);
+  color:white;
+
+  box-shadow:0 8px 18px rgba(108,99,255,0.35);
+
+  transition:0.25s;
+}
+
+/* hover */
+.budget-pro .save-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 22px rgba(108,99,255,0.45);
+}
+
+/* click */
+.budget-pro .save-btn:active{
+  transform:scale(0.98);
+}
+
+
+.budget-pro::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg,transparent,rgba(108,99,255,0.08),transparent);
+  animation:shine 6s infinite linear;
+}
+
+@keyframes shine{
+  0%{transform:translateX(-100%)}
+  100%{transform:translateX(100%)}
+}
+
+/* STATS AREA */
+.budget-stats{
+  display:flex;
+  align-items:center;
+  gap:25px;
+  margin-top:25px;
+  flex-wrap:wrap;
+}
+
+/* RING */
+.budget-ring{
+  position:relative;
+  width:90px;
+  height:90px;
+}
+
+.budget-ring svg{
+  transform:rotate(-90deg);
+}
+
+.budget-ring circle{
+  fill:none;
+  stroke:#e6e6ff;
+  stroke-width:8;
+}
+
+#budgetProgress{
+  stroke:var(--primary);
+  stroke-dasharray:251;
+  stroke-dashoffset:251;
+  transition:0.6s;
+}
+
+.budget-percent{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+}
+/* MATCH PRO BACKUP SIZE */
+
+.budget-pro{
+  max-width:950px;
+  margin:40px auto;
+  padding:30px;
+}
+
+.privacy-note{
+  margin-top:25px;
+  text-align:center;
+  font-size:13px;
+  padding:12px;
+  border-radius:12px;
+  background:rgba(108,99,255,0.08);
+  opacity:0.85;
+}
+
+
+.budget-pro:hover{
+  transform:translateY(-6px);
+  box-shadow:
+    0 30px 60px rgba(0,0,0,0.2);
+}
+
+
+/* AI INSIGHT */
+.budget-ai{
+  background:rgba(108,99,255,0.08);
+  padding:14px 18px;
+  border-radius:14px;
+  font-size:14px;
+  line-height:1.5;
+}
+
+.budget-ai span{
+  display:block;
+  opacity:0.75;
+  margin-top:4px;
+}
+
+/* DARK MODE */
+body.dark .budget-ai{
+  background:rgba(255,255,255,0.08);
+}
+
+
+.budget-pro .row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  max-width:700px;
+}
+
+#backupHistory{
+  list-style:none;
+  padding:0;
+  margin-top:10px;
+}
+
+#backupHistory li{
+  background:#f4f6ff;
+  padding:10px 14px;
+  border-radius:10px;
+  margin-bottom:8px;
+  font-size:14px;
+}
+
+body.dark #backupHistory li{
+  background:#2a2a3d;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <button class="back-btn" onclick="goBack()">← Dashboard</button>
+  <div class="header-title">⚙️ Settings</div>
+  <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+</header>
+
+
+<div class="container"></div>
+<div class="settings-card">
+<h3>🌍 Language</h3>
+
+<select>
+  <option>English</option>
+  <option>Hindi</option>
+  <option>Telugu</option>
+</select>
+
+<button class="save-btn">Save Language</button>
+</div>
+<div class="settings-card">
+<h3>🔐 App Lock</h3>
+
+<input placeholder="Set 4-digit PIN">
+<button class="save-btn">Enable Lock</button>
+</div>
+<div class="settings-card backup-card">
+
+  <div class="backup-header">
+    <div class="backup-icon">☁️</div>
+    <div>
+      <h3>Pro Backup</h3>
+      <p class="backup-sub">Securely save your financial data</p>
+    </div>
+  </div>
+
+  <!-- AUTO BACKUP -->
+  <div class="auto-row">
+    <span>Auto Backup</span>
+    <label class="switch">
+      <input type="checkbox" id="autoBackup">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="backup-actions">
+
+    <button class="backup-btn export" onclick="exportData()">
+      ⬇️ Export Backup
+      <span>Download JSON file</span>
+    </button>
+
+    <button class="backup-btn import" onclick="importData()">
+      ⬆️ Import Backup
+      <span>Restore data</span>
+    </button>
+
+    <button class="backup-btn cloud" onclick="cloudSync()">
+      ☁️ Cloud Sync
+      <span>Simulate sync</span>
+    </button>
+
+  </div>
+
+  <!-- BADGES -->
+  <div class="badges">
+    🔐 End-to-End Encrypted  
+    ⭐ Premium Backup Active
+  </div>
+
+  <!-- HISTORY -->
+  <h4>Backup History</h4>
+  <ul id="backupHistory"></ul>
+
+</div>
+
+
+  </div>
+
+  <div class="privacy-note">
+  🔒 Your financial data stays private on your device
+</div>
+
+
+</div>
+
+
+  <!-- BUDGET SETTINGS -->
+  <div class="settings-card budget-pro">
+
+  <div class="budget-header">
+    <div class="budget-icon">💰</div>
+    <div>
+      <h3>Budget Preferences</h3>
+      <p class="budget-sub">Smart financial control</p>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div>
+      <label>Monthly Budget</label>
+      <input type="number" id="monthlyBudget" placeholder="₹ Enter amount">
+    </div>
+
+    <div>
+      <label>Currency</label>
+      <select id="currency">
+        <option>INR (₹)</option>
+        <option>USD ($)</option>
+        <option>EUR (€)</option>
+      </select>
+    </div>
+    <!-- PREMIUM STATS -->
+<div class="budget-stats">
+
+  <div class="budget-ring">
+    <svg width="90" height="90">
+      <circle cx="45" cy="45" r="40"></circle>
+      <circle cx="45" cy="45" r="40" id="budgetProgress"></circle>
+    </svg>
+    <div class="budget-percent" id="budgetPercent">0%</div>
+  </div>
+
+  <div class="budget-ai">
+    🤖 AI Insight  
+    <span id="aiText">Start tracking to unlock insights</span>
+  </div>
+
+</div>
+
+  </div>
+
+  <div class="budget-actions">
+  <button class="save-btn" onclick="saveBudget()">
+    💾 Save Settings
+  </button>
+
+
+</div>
+
+
+  <!-- Extra Premium Info -->
+  <div class="budget-info">
+    📊 AI spending insights enabled  
+    🔔 Smart alerts active  
+    ⭐ Premium budgeting tools
+  </div>
+
+</div>
+
+
+
+</div>
+</div>
+
+<script>
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem("theme",document.body.classList.contains("dark"));
+}
+
+window.onload=()=>{
+
+  // Theme load
+  if(localStorage.getItem("theme")==="true"){
+    document.body.classList.add("dark");
+  }
+
+  // Budget load
+  const savedBudget =
+    localStorage.getItem("budgetAmount");
+
+  if(savedBudget){
+    document.getElementById("monthlyBudget").value =
+      savedBudget;
+  }
+
+  // Currency load
+  const savedCurrency =
+    localStorage.getItem("currency");
+
+  if(savedCurrency){
+    document.getElementById("currency").value =
+      savedCurrency;
+  }
+};
+
+function goBack(){
+  window.location.href="dashboard.html";
+}
+
+
+
+// Default password (first login)
+if(!localStorage.getItem("userPass")){
+  localStorage.setItem("userPass","1234");
+}
+
+function changePassword(){
+
+  const oldP =
+    document.getElementById("oldPass").value.trim();
+
+  const newP =
+    document.getElementById("newPass").value.trim();
+
+  const confirmP =
+    document.getElementById("confirmPass").value.trim();
+
+  const saved =
+    localStorage.getItem("userPass");
+
+  if(oldP !== saved){
+    alert("❌ Old password incorrect");
+    return;
+  }
+
+  if(newP.length < 4){
+    alert("Password must be 4+ characters");
+    return;
+  }
+
+  if(newP !== confirmP){
+    alert("Passwords do not match");
+    return;
+  }
+
+  localStorage.setItem("userPass", newP);
+
+  alert("✅ Password Updated");
+}
+</script>
+
+</script>
+<script>
+
+// AUTO BACKUP SAVE
+document.getElementById("autoBackup").onchange = e=>{
+  localStorage.setItem("autoBackup", e.target.checked);
+  alert(e.target.checked ? "Auto Backup ON" : "Auto Backup OFF");
+};
+
+// LOAD TOGGLE
+if(localStorage.getItem("autoBackup")==="true"){
+  document.getElementById("autoBackup").checked = true;
+}
+
+// EXPORT
+/* ===== EXPORT FULL BACKUP ===== */
+function exportData(){
+
+  const allData = {};
+
+  // Save EVERYTHING from localStorage
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    allData[key] = localStorage.getItem(key);
+  }
+
+  const blob = new Blob(
+    [JSON.stringify(allData,null,2)],
+    {type:"application/json"}
+  );
+
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "budgetwise-backup.json";
+  a.click();
+
+  alert("✅ Full Backup Downloaded");
+}
+
+/* ===== IMPORT FULL BACKUP ===== */
+function importData(){
+
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "application/json";
+
+  input.onchange = e=>{
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = evt=>{
+      const data = JSON.parse(evt.target.result);
+
+      Object.keys(data).forEach(k=>{
+        localStorage.setItem(k,data[k]);
+      });
+
+      alert("✅ Backup Restored Successfully");
+      location.reload();
+    };
+
+    reader.readAsText(file);
+  };
+
+  input.click();
+}
+// CLOUD SYNC
+function cloudSync(){
+  alert("☁️ Synced to cloud (simulation)");
+  addHistory("Cloud Sync");
+}
+
+// HISTORY
+function addHistory(text){
+  const ul = document.getElementById("backupHistory");
+  const li = document.createElement("li");
+  li.innerText = text + " • " + new Date().toLocaleString();
+  ul.prepend(li);
+}
+
+</script>
+<script src="budgetManager.js"></script>
+<script>
+function saveBudget(){
+
+  const amt =
+    document.getElementById("monthlyBudget").value;
+
+  const cur =
+    document.getElementById("currency").value;
+
+  BudgetManager.saveSettings({
+    monthlyIncome: amt,
+    currency: cur
+  });
+
+  BudgetManager.updateBudgetRing(
+    "budgetProgress",
+    "budgetPercent"
+  );
+
+  alert("✅ Settings saved & synced!");
+}
+
+/* UPDATE UI */
+function updateBudgetUI(budget){
+
+  const spent = Math.floor(budget * 0.45); // demo value
+  const percent = Math.min(
+    Math.round((spent / budget) * 100),100
+  );
+
+  const circle = document.getElementById("budgetProgress");
+  const text = document.getElementById("budgetPercent");
+  const ai = document.getElementById("aiText");
+
+  const offset = 251 - (251 * percent) / 100;
+
+  circle.style.strokeDashoffset = offset;
+  text.innerText = percent + "%";
+
+  if(percent < 50){
+    ai.innerText = "Spending under control 👍";
+  }else if(percent < 80){
+    ai.innerText = "Moderate spending ⚠️";
+  }else{
+    ai.innerText = "Budget nearly exhausted 🚨";
+  }
+}
+
+/* LOAD ON PAGE */
+const savedBudget = localStorage.getItem("budgetAmount");
+if(savedBudget){
+  updateBudgetUI(Number(savedBudget));
+}
+</script>
+
+</body>
+</html>

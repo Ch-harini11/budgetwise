@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BudgetWise | Dashboard</title>
+
+<style>
+
+/* ===== GLOBAL ===== */
+body{
+  margin:0;
+  font-family: "Poppins", sans-serif;
+  background:#f4f6f9;
+}
+
+/* ===== LAYOUT ===== */
+.layout{
+  display:flex;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:230px;
+  height:100vh;
+  background:white;
+  box-shadow:2px 0 10px rgba(0,0,0,0.05);
+  padding:20px;
+  position:fixed;
+}
+
+.logo{
+  color:#6c63ff;
+  margin-bottom:30px;
+}
+
+.nav{
+  display:block;
+  padding:12px;
+  margin:8px 0;
+  border-radius:10px;
+  cursor:pointer;
+  color:#555;
+  text-decoration:none;
+}
+
+.nav:hover{ background:#f2f3ff; }
+
+.nav.active{
+  background:#6c63ff;
+  color:white;
+}
+
+.logout{ color:#e74c3c; }
+
+/* ===== MAIN ===== */
+.main{
+  margin-left:230px;
+  width:100%;
+  padding:25px 40px;
+}
+
+/* ===== TOP BAR ===== */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:25px;
+}
+
+.topbar input{
+  padding:10px 15px;
+  border-radius:20px;
+  border:1px solid #ddd;
+  width:220px;
+}
+
+/* ===== CARDS ===== */
+
+.nav.active{
+  background: linear-gradient(90deg,#6c63ff,#8f7cff);
+  box-shadow:0 0 15px rgba(108,99,255,0.6);
+}
+
+/* ===== GRID ===== */
+.grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:16px;
+  margin-bottom:18px;
+  align-items:center;
+}
+
+
+.grid input,
+.grid select{
+  width:100%;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-size:14px;
+  box-sizing:border-box;
+}
+
+/* ===== BUTTON ===== */
+button{
+  background: linear-gradient(135deg,#6c63ff,#8f7cff);
+  color:white;
+  border:none;
+  padding:12px 16px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+  transition:0.3s;
+}
+
+button:hover{
+  transform:scale(1.05);
+  box-shadow:0 6px 18px rgba(108,99,255,0.4);
+}
+
+
+/* ===== TABLE ===== */
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:14px;
+  border-bottom:1px solid #eee;
+  text-align:left;
+}
+
+th{ color:#888; }
+
+/* ===== SUMMARY ===== */
+.summary{
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+}
+
+.summary-box{
+  flex:1;
+  min-width:200px;
+  padding:20px;
+  border-radius:14px;
+  color:white;
+  font-weight:600;
+  letter-spacing:0.3px;
+  background: linear-gradient(135deg,#6c63ff,#8f7cff);
+  box-shadow:0 8px 25px rgba(108,99,255,0.35);
+  transition:0.3s;
+}
+
+.summary-box:hover{
+  transform:scale(1.05);
+}
+body{
+  margin:0;
+  font-family:"Poppins",sans-serif;
+  background:linear-gradient(135deg,#f6f7fb,#eef1f9);
+  color:#1f2937;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
+/* LIGHT MODE */
+input, select{
+  background:#ffffff;
+  border:1px solid #ddd;
+  color:#222;
+}
+
+/* DARK MODE ONLY */
+body.dark input,
+body.dark select{
+  background:#2a2a3d;
+  border:1px solid #444;
+  color:white;
+}
+
+
+input:focus, select:focus{
+  border-color:#6c63ff;
+  box-shadow:0 0 10px #6c63ff;
+}
+.ai-btn{
+  background:linear-gradient(135deg,#6c63ff,#8f7cff);
+  box-shadow:0 0 20px rgba(108,99,255,0.7);
+  transition:0.3s;
+}
+
+.ai-btn:hover{
+  transform:scale(1.15);
+}
+.progress{
+  height:10px;
+  background:#222;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+#budgetBar{
+  height:100%;
+  width:60%;
+  background:linear-gradient(90deg,#2ecc71,#27ae60);
+}
+
+
+.summary-box:nth-child(1){ border-left:5px solid #6c63ff; }
+.summary-box:nth-child(2){ border-left:5px solid #2ecc71; }
+.summary-box:nth-child(3){ border-left:5px solid #f39c12; }
+.summary-box:nth-child(4){ border-left:5px solid #e74c3c; }
+
+/* ===== TAGS ===== */
+.tag{
+  padding:4px 10px;
+  border-radius:6px;
+  font-size:12px;
+  color:white;
+}
+
+.tag.present{ background:#6c63ff; }
+.tag.past{ background:#999; }
+.tag.future{ background:#2ecc71; }
+
+/* ===== AI BUTTON ===== */
+.ai-assistant{
+  position:fixed;
+  bottom:25px;
+  right:25px;
+}
+
+.ai-btn{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  font-size:26px;
+  background:#6c63ff;
+  color:white;
+  border:none;
+}
+
+/* ===== DARK MODE ===== */
+
+body.dark{
+  background:#121212;
+  color:#f1f1f1;
+}
+
+/* Cards */
+body.dark .card,
+body.dark .summary-box,
+body.dark .sidebar{
+  background:#1f1f2f;
+  color:white;
+}
+
+/* Inputs */
+body.dark input,
+body.dark select{
+  background:#2a2a3d;
+  color:white;
+  border:1px solid #444;
+}
+
+/* Table */
+body.dark table{
+  color:white;
+}
+
+body.dark th{
+  color:#ccc;
+}
+
+/* Topbar search */
+body.dark .topbar input{
+  background:#2a2a3d;
+  color:white;
+  border:1px solid #444;
+}
+
+/* Sidebar hover */
+body.dark .nav:hover{
+  background:#2a2a3d;
+}
+
+/* Sidebar text */
+body.dark .nav{
+  color:#ddd;
+}
+
+/* Logo */
+body.dark .logo{
+  color:#a084ff;
+}
+
+/* ===== CARD HOVER EFFECT ===== */
+
+
+.card h3{
+  margin-bottom:18px;
+}
+
+button{
+  background:linear-gradient(135deg,#6c63ff,#8f7cff);
+  padding:12px 18px;
+  border-radius:10px;
+  font-weight:600;
+}
+
+
+
+.card{
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(0,0,0,0.05);
+  border-radius:16px;
+  padding:24px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  margin-bottom:25px;
+  transition:0.25s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 14px 40px rgba(0,0,0,0.12);
+}
+.card button{
+  margin-top:8px;
+  width:180px;
+}
+
+/* ===== TABLE ROW ANIMATION ===== */
+@keyframes fadeSlide{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0 10px;
+}
+td:last-child{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+td button{
+  padding:8px 14px;
+  border-radius:8px;
+  font-size:13px;
+  font-weight:500;
+  min-width:70px;
+}
+
+td button:first-of-type{
+  background:linear-gradient(135deg,#6c63ff,#8f7cff);
+}
+
+td button:last-of-type{
+  background:linear-gradient(135deg,#ff6b6b,#ff4d4d);
+}
+.tag{
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:0.5px;
+}
+
+.tag.present{
+  background:#6c63ff;
+}
+
+.tag.past{
+  background:#aaa;
+}
+
+.tag.future{
+  background:#2ecc71;
+}
+th:nth-child(1), td:nth-child(1){ width:15%; }
+th:nth-child(2), td:nth-child(2){ width:20%; }
+th:nth-child(3), td:nth-child(3){ width:20%; }
+th:nth-child(4), td:nth-child(4){ width:45%; }
+
+thead th{
+  text-align:left;
+  font-weight:600;
+  color:#888;
+  padding:12px 16px;
+}
+
+/* LIGHT MODE TABLE */
+tbody tr{
+  background:white;
+  color:#111;
+}
+
+/* DARK MODE TABLE */
+body.dark tbody tr{
+  background:#1e1e2f;
+  color:#f1f1f1;
+}
+
+tbody td{
+  padding:16px;
+  vertical-align:middle;
+}
+
+tbody tr:hover{
+  transform:scale(1.01);
+  box-shadow:0 6px 16px rgba(0,0,0,0.08);
+}
+tbody tr td:first-child{
+  border-left:4px solid #6c63ff;
+  border-radius:12px 0 0 12px;
+}
+
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media(max-width:768px){
+
+  .sidebar{
+    width:180px;
+  }
+
+  .main{
+    margin-left:180px;
+    padding:20px;
+  }
+
+  .summary{
+    flex-direction:column;
+  }
+
+  .summary-box{
+    width:100%;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  table{
+    font-size:13px;
+  }
+}
+.add-expense-btn{
+  display:block;
+  margin:auto;
+  padding:12px 30px;
+  font-size:15px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:15px;
+  margin-bottom:15px;
+}
+
+.grid input,
+.grid select{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:1px solid #ddd;
+  font-size:14px;
+}
+/* Inputs */
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+  margin-bottom:20px;
+}
+
+.tag{
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:600;
+}
+
+.tag.present{
+  background:linear-gradient(45deg,#6c63ff,#8f7cff);
+}
+
+.tag.past{
+  background:#555;
+}
+
+.tag.future{
+  background:#2ecc71;
+}
+/* Improve text clarity inside dark cards */
+
+
+/* Table headers clearer */
+th{
+  color:#6b7280;
+}
+
+body.dark th{
+  color:#cbd5f1;
+}
+
+/* Input text */
+.add-expense-card input,
+.add-expense-card select{
+  color:#ffffff;
+}
+
+/* Placeholder text */
+
+
+/* Section titles */
+/* Clean Light Add Expense */
+.add-expense-card{
+  background:linear-gradient(145deg,#ffffff,#f9fafc);
+}
+
+/* Clean inputs */
+.add-expense-card input,
+.add-expense-card select{
+  background:white;
+  border:1px solid #e5e7eb;
+  color:#111827;
+}
+
+.add-expense-card input::placeholder{
+  color:#9ca3af;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+  
+  <h2 class="logo">BudgetWise</h2>
+<a href="overview.html" class="nav">Overview</a>
+  <a class="nav active">Dashboard</a>
+  <a class="nav" onclick="window.location='profile.html'">Profile</a>
+  <a class="nav" onclick="goToReports()">Reports</a>
+  <a class="nav" onclick="window.location='settings.html'">Settings</a>
+  <a class="nav logout" onclick="logout()">Logout</a>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+
+<div class="topbar">
+  <h2>Dashboard</h2>
+
+  <div style="display:flex; gap:12px; align-items:center;">
+    <input placeholder="Search..." />
+
+    <!-- 🌙 THEME TOGGLE -->
+    <button onclick="toggleTheme()" 
+            style="border-radius:50%; padding:10px 12px;">
+      🌙
+    </button>
+  </div>
+</div>
+
+
+<div class="container">
+
+<!-- PROFILE -->
+<div class="card">
+<h3>Profile Management</h3>
+
+<div class="grid">
+  <input type="number" id="income" placeholder="Primary Monthly Income">
+  <input type="number" id="extraIncome" placeholder="Additional Income">
+  <input type="number" id="goal" placeholder="Financial Goal">
+</div>
+
+<button onclick="saveProfile()">Save Profile</button>
+</div>
+
+
+<!-- ADD EXPENSE -->
+<div class="card add-expense-card">
+<h3>Add Expense</h3>
+
+<div class="grid">
+  <input type="number" id="amount" placeholder="Amount">
+
+<select id="category">
+  <option>🍔 Food</option>
+  <option>🛒 Shopping</option>
+  <option>✈️ Travel</option>
+  <option>🏠 Rent</option>
+  <option>💳 Other</option>
+</select>
+
+  <input type="date" id="date">
+
+  <select id="expenseType">
+    <option value="present">Present</option>
+    <option value="past">Past</option>
+    <option value="future">Future</option>
+  </select>
+
+  <!-- Empty spacer -->
+  <div></div>
+
+  <button class="add-expense-btn" onclick="addExpense()">Add Expense</button>
+</div>
+
+
+
+<!-- HISTORY -->
+<select onchange="filterCategory(this.value)">
+  <option value="all">All</option>
+  <option value="Food">Food</option>
+  <option value="Rent">Rent</option>
+  <option value="Travel">Travel</option>
+  <option value="Shopping">Shopping</option>
+  <option value="Other">Other</option>
+</select>
+
+
+<table>
+<thead>
+<tr>
+<th>Amount</th>
+<th>Category</th>
+<th>Date</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="expenseTable"></tbody>
+</table>
+</div>
+
+<!-- SUMMARY -->
+<div class="card">
+<h3>Expense Summary</h3>
+<div class="summary">
+<div class="summary-box" id="monthlyTotal">Monthly: ₹0</div>
+<div class="summary-box" id="yearlyTotal">Yearly: ₹0</div>
+<div class="summary-box" id="remainingTotal">Remaining: ₹0</div>
+<div class="summary-box" id="goalSummary">Goal: ₹0</div>
+</div>
+</div>
+
+<p style="margin-top:15px;">Budget Usage</p>
+<div class="progress">
+  <div id="budgetBar"></div>
+</div>
+
+<!-- SAVED PROFILE -->
+<div class="card">
+<h3>Saved Profile Info</h3>
+<div class="summary">
+<div class="summary-box" id="showPrimary">Primary: ₹0</div>
+<div class="summary-box" id="showExtra">Extra: ₹0</div>
+<div class="summary-box" id="showTotalIncome">Total: ₹0</div>
+<div class="summary-box" id="showGoal">Goal: ₹0</div>
+</div>
+</div>
+
+</div>
+</main>
+</div>
+
+<!-- AI BUTTON -->
+<div class="ai-assistant">
+<button class="ai-btn" onclick="toggleAI()">🤖</button>
+</div>
+
+<!-- KEEP ALL YOUR EXISTING JS BELOW THIS LINE -->
+<script src="budgetManager.js"></script>
+
+<script>
+
+  window.onload = () => {
+  if(localStorage.getItem("theme") === "true"){
+    document.body.classList.add("dark");
+  }
+
+  loadProfile();
+  setTodayDate();
+  loadExpenses();
+  showProfileInfo(); 
+};
+window.onload = () => {
+  BudgetManager.updateDashboardUI();
+};
+function goToReports(){
+  const exp = JSON.parse(localStorage.getItem("expenses")) || [];
+  localStorage.setItem("expenses", JSON.stringify(exp));
+
+  window.location.href = "graph.html";
+}
+
+function toggleAI(){
+  const box = document.getElementById("aiBox");
+  box.style.display =
+    box.style.display==="block"?"none":"block";
+
+  if(box.style.display==="block"){
+    aiHelp("intro");
+  }
+}
+
+
+
+let currentLang = "en-IN";
+
+function setLanguage(lang){
+  currentLang = lang;
+}
+
+const categoryIcons = {
+  Food: "🍔",
+  Shopping: "🛒",
+  Travel: "✈️",
+  Rent: "🏠",
+  Other: "💳"
+};
+
+let lastMessage = "";
+
+
+
+
+function typeMessage(text){
+  const content = document.getElementById("aiContent");
+  content.innerHTML = "<p class='typing'></p>";
+  let i = 0;
+
+  const interval = setInterval(() => {
+    content.querySelector("p").innerHTML += text.charAt(i);
+    i++;
+    if(i >= text.length){
+      clearInterval(interval);
+      content.querySelector("p").classList.remove("typing");
+      lastMessage = text;
+    }
+  }, 20);
+}
+
+
+
+function speakAI(){
+  if(!lastMessage) return;
+  const speech = new SpeechSynthesisUtterance(lastMessage);
+  speech.lang = "en-IN";
+  window.speechSynthesis.speak(speech);
+}
+
+
+function analyzeExpenses(){
+  const expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+  const income = Number(document.getElementById("income")?.value) || 0;
+
+  let monthly = 0;
+  let yearly = 0;
+  let overall = 0;
+
+  const now = new Date();
+
+  expenses.forEach(e => {
+    const d = new Date(e.date);
+    overall += e.amount;
+
+    if(d.getFullYear() === now.getFullYear()){
+      yearly += e.amount;
+
+      if(d.getMonth() === now.getMonth()){
+        monthly += e.amount;
+      }
+    }
+  });
+
+  return { monthly, yearly, overall, income };
+}
+
+function aiHelp(topic){
+  const help = {
+    intro:
+      "Welcome to BudgetWise. BudgetWise is a personal finance management application designed to help users track expenses, manage income, and plan financial goals efficiently.",
+
+    why:
+      "BudgetWise helps users control spending, save money, and gain financial awareness. It provides clear insights using charts, summaries, and budget tracking, making financial planning simple and effective.",
+
+    signup:
+      "To create a new account, click on Sign Up from the login page. Enter your name, valid email, and password, then submit the form to register successfully.",
+
+    login:
+      "To login, enter your registered email and password on the login page. After successful login, you will be redirected to the dashboard.",
+
+    dashboard: (() => {
+      const { monthly, yearly, overall, income } = analyzeExpenses();
+      const remaining = income - monthly;
+
+      let warning = "";
+      if(income && monthly > income){
+        warning = " ⚠️ Warning: You are spending more than your monthly income. Try to save more.";
+      }
+
+      return `
+📊 Dashboard Summary:
+• Monthly spending: ₹${monthly}
+• Yearly spending: ₹${yearly}
+• Overall spending: ₹${overall}
+• Remaining balance: ₹${remaining >= 0 ? remaining : 0}
+${warning}
+      `;
+    })(),
+
+    reports:
+      "The reports section provides visual analytics such as pie charts and line graphs to analyze monthly, yearly, and overall spending patterns.",
+
+    profile:
+      "The profile page helps you manage personal details like income and financial goals, which are used to calculate your remaining budget.",
+
+    settings:
+      "The settings page allows you to change your password, manage preferences, and customize the application behavior.",
+
+    theme:
+      "You can switch between light and dark mode using the theme toggle. Your preference is saved automatically.",
+
+    logout:
+      "To logout, open the user menu and click on Logout. You will be securely logged out and redirected to the login page."
+  };
+
+  typeMessage(help[topic] || "I can help you with BudgetWise features.");
+  speakResponse(help[topic]);
+}
+
+
+
+
+
+
+function contextHelp(){
+  const page = window.location.pathname.toLowerCase();
+
+  if(page.includes("dashboard")){
+    typeMessage("Welcome to the Dashboard! Here you can manage expenses, view summaries, and track your budget.");
+  }
+  else if(page.includes("reports")){
+    typeMessage("This is the Reports page. You can analyze spending using charts for monthly, yearly and overall views.");
+  }
+  else if(page.includes("profile")){
+    typeMessage("This is your Profile page. Update income and goals to personalize your budget.");
+  }
+  else if(page.includes("settings")){
+    typeMessage("This is the Settings page. Customize preferences and application behavior.");
+  }
+  else{
+    typeMessage("Welcome to BudgetWise! I’ll guide you through using the application.");
+  }
+}
+
+
+let recognition;
+let micBtn;
+
+
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.lang = "en-IN";
+  recognition.continuous = false;
+  recognition.interimResults = false;
+}
+
+
+function startListening(){
+  if(!recognition){
+    alert("Speech recognition not supported in this browser");
+    return;
+  }
+
+  micBtn = document.querySelector(".ai-header button");
+  micBtn.classList.add("listening");
+
+  recognition.start();
+
+  recognition.onresult = (event) => {
+    const spokenText = event.results[0][0].transcript.toLowerCase();
+    micBtn.classList.remove("listening");
+    handleVoiceCommand(spokenText);
+  };
+
+  recognition.onerror = () => {
+    micBtn.classList.remove("listening");
+  };
+
+  recognition.onend = () => {
+    micBtn.classList.remove("listening");
+  };
+}
+
+
+function handleVoiceCommand(text){
+  let response = "";
+
+  if(text.includes("what is budgetwise") || text.includes("about budgetwise")){
+    response = "BudgetWise is a personal finance management application that helps track expenses, manage income, and plan budgets.";
+  }
+  else if(text.includes("why budgetwise") || text.includes("use budgetwise")){
+    response = "BudgetWise helps control spending, improve savings, and provides clear financial insights using reports and charts.";
+  }
+  else if(text.includes("create account") || text.includes("sign up")){
+    response = "To create a new account, go to the signup page, enter your details, and submit the form.";
+  }
+  else if(text.includes("logout") || text.includes("log out")){
+    response = "To logout, click on the user menu and select logout. You will be redirected to the login page.";
+  }
+  else if(text.includes("login")){
+    response = "Use your registered email and password to login to BudgetWise.";
+  }
+  else if(text.includes("dashboard")){
+    response = "The dashboard helps manage expenses and shows monthly and yearly summaries.";
+  }
+  else if(text.includes("report")){
+    response = "Reports show detailed spending analysis using charts and graphs.";
+  }
+  else if(text.includes("profile")){
+    response = "Profile page allows you to manage income, goals, and personal information.";
+  }
+  else if(text.includes("setting")){
+    response = "Settings allow you to change password and manage preferences.";
+  }
+  else if(text.includes("theme") || text.includes("dark")){
+    response = "You can switch between light and dark mode using the theme toggle.";
+  }
+  else{
+    response = "I can help you with BudgetWise introduction, login, signup, dashboard, reports, profile, settings, theme, and logout.";
+  }
+
+  typeMessage("🗣️ You said: \"" + text + "\"\n\n🤖 " + response);
+  speakResponse(response);
+}
+
+
+
+function speakResponse(text){
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-IN";
+  window.speechSynthesis.speak(utterance);
+}
+
+
+</script>
+
+
+<script>
+let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+let editIndex = -1;
+
+function saveExpenses() {
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+}
+function updateExpenseSummary(){
+
+  const expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+  const profile = JSON.parse(localStorage.getItem("profile")) || {};
+
+  const income =
+    (Number(profile.primaryIncome)||0) +
+    (Number(profile.additionalIncome)||0);
+
+  const goal = Number(profile.goal)||0;
+
+  let monthly = 0;
+  let yearly = 0;
+
+  const now = new Date();
+
+  expenses.forEach(e=>{
+    const d = new Date(e.date);
+
+    if(d.getFullYear() === now.getFullYear()){
+      yearly += e.amount;
+
+      if(d.getMonth() === now.getMonth()){
+        monthly += e.amount;
+      }
+    }
+  });
+
+  document.getElementById("monthlyTotal").innerText =
+    `Monthly: ₹${monthly}`;
+
+  document.getElementById("yearlyTotal").innerText =
+    `Yearly: ₹${yearly}`;
+
+  document.getElementById("remainingTotal").innerText =
+    `Remaining: ₹${income - monthly}`;
+
+  document.getElementById("goalSummary").innerText =
+    `Goal: ₹${goal}`;
+
+  checkAlerts(monthly, income);
+}
+
+
+function showProfileInfo(){
+
+  const p = JSON.parse(localStorage.getItem("profile")) || {};
+
+  const primary = p.primaryIncome || 0;
+  const extra = p.additionalIncome || 0;
+  const goal = p.goal || 0;
+
+  document.getElementById("showPrimary").innerText =
+    `Primary: ₹${primary}`;
+
+  document.getElementById("showExtra").innerText =
+    `Extra: ₹${extra}`;
+
+  document.getElementById("showTotalIncome").innerText =
+    `Total Income: ₹${primary + extra}`;
+
+  document.getElementById("showGoal").innerText =
+    `Goal: ₹${goal}`;
+}
+
+
+function saveProfile(){
+
+  const primary = Number(document.getElementById("income").value);
+  const extra = Number(document.getElementById("extraIncome").value || 0);
+  const goal = Number(document.getElementById("goal").value || 0);
+
+  const profile = {
+    primaryIncome: primary,
+    additionalIncome: extra,
+    goal: goal
+  };
+
+  localStorage.setItem("profile", JSON.stringify(profile));
+
+  alert("Profile saved ✅");
+  showProfileInfo();
+  render();   // 👈 THIS IS THE KEY
+}
+
+
+
+
+
+function checkAlerts(monthly, income){
+  const profile = JSON.parse(localStorage.getItem("profile")) || {};
+const goal = profile.goal || 0;
+
+  const remaining = income - monthly;
+
+  /* ===== INCOME EXCEEDED ALERT ===== */
+  if(income > 0 && monthly >= income){
+    if(!localStorage.getItem("incomeAlertShown")){
+      alert(
+        "⚠️ Budget Alert!\n\n" +
+        "You have reached or exceeded your monthly income.\n" +
+        "Please review your expenses."
+      );
+      localStorage.setItem("incomeAlertShown", "true");
+    }
+  } else {
+    localStorage.removeItem("incomeAlertShown");
+  }
+
+  /* ===== GOAL SAFETY ALERT ===== */
+  if(goal > 0 && remaining < goal){
+    if(!localStorage.getItem("goalAlertShown")){
+      alert(
+        "⚠️ Goal Warning!\n\n" +
+        "Your remaining balance is below your goal amount.\n" +
+        "Try to control spending to meet your goal."
+      );
+      localStorage.setItem("goalAlertShown", "true");
+    }
+  } else {
+    localStorage.removeItem("goalAlertShown");
+  }
+}
+
+
+async function addExpense() {
+
+  const expense = {
+    userId: localStorage.getItem("userId") || "demoUser",
+    amount: Number(amount.value),
+    category: category.value,
+    date: date.value,
+    type: expenseType.value
+  };
+
+  /* ===== EDIT MODE ===== */
+  if(editIndex >= 0){
+
+    const id = expenses[editIndex].id || expenses[editIndex]._id;
+
+    const res = await fetch(
+      `http://localhost:8081/expenses/${id}`,
+      {
+        method:"PUT",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(expense)
+      }
+    );
+
+    if(res.ok){
+      alert("Updated ✅");
+      editIndex = -1;
+      clearForm();
+      loadExpenses();
+    }
+    return;
+  }
+
+  /* ===== NORMAL ADD ===== */
+  const res = await fetch("http://localhost:8081/expenses",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify(expense)
+  });
+
+  if(res.ok){
+    alert("Expense Saved ✅");
+    clearForm();
+    loadExpenses();
+  }
+}
+
+function askAI(){
+  const input = document.getElementById("aiInput");
+  const msg = input.value.toLowerCase().trim();
+
+  if(!msg) return;
+
+  if(msg.includes("login"))
+    aiHelp("login");
+
+  else if(msg.includes("sign") || msg.includes("signup"))
+    aiHelp("signup");
+
+  else if(msg.includes("dashboard"))
+    aiHelp("dashboard");
+
+  else if(msg.includes("report") || msg.includes("chart"))
+    aiHelp("reports");
+
+  else if(msg.includes("profile") || msg.includes("income") || msg.includes("goal"))
+    aiHelp("profile");
+
+  else if(msg.includes("setting") || msg.includes("theme"))
+    aiHelp("settings");
+
+  else if(msg.includes("logout"))
+    aiHelp("logout");
+
+  else if(msg.includes("why"))
+    aiHelp("why");
+
+  else
+    aiHelp("intro");
+
+  input.value="";
+}
+
+
+function loadExpenses(){
+  const userId = localStorage.getItem("userId") || "demoUser";
+
+  fetch(`http://localhost:8081/expenses/${userId}`)
+  .then(res=>res.json())
+  .then(data=>{
+    expenses = data;   // store globally
+    render();          // use your existing render()
+  });
+}
+
+
+function clearForm(){
+  document.getElementById("amount").value = "";
+  document.getElementById("category").value = "Food";
+  setTodayDate();
+  document.getElementById("expenseType").value = "present";
+}
+
+
+
+function loadProfile(){
+
+  const userId = localStorage.getItem("userId");
+  if(!userId) return;
+
+  fetch(`http://localhost:8081/profile/${userId}`)
+  .then(res=>res.json())
+  .then(p=>{
+    if(!p) return;
+
+    document.getElementById("income").value =
+      p.primaryIncome || "";
+
+    document.getElementById("extraIncome").value =
+      p.extraIncome || "";
+
+    document.getElementById("goal").value =
+      p.goal || "";
+
+    document.getElementById("goalSummary").innerText =
+      `Goal: ₹${p.goal||0}`;
+  });
+}
+
+
+
+
+function budgetReminder(){
+  const income = Number(localStorage.getItem("income")) || 0;
+  const expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+  const monthlySpent = expenses.reduce((sum,e)=>{
+    const d = new Date(e.date);
+    const now = new Date();
+    if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()){
+      return sum + e.amount;
+    }
+    return sum;
+  },0);
+
+  if(income && monthlySpent > income * 0.8){
+    console.log("⚠️ Budget nearing limit");
+  }
+}
+
+setTimeout(budgetReminder, 2000);
+
+function render(){
+  const table = document.getElementById("expenseTable");
+  table.innerHTML = "";
+
+  const profile = JSON.parse(localStorage.getItem("profile")) || {};
+
+const income =
+  (Number(profile.primaryIncome) || 0) +
+  (Number(profile.additionalIncome) || 0);
+
+const goal = Number(profile.goal) || 0;
+
+
+  document.getElementById("goalSummary").innerText = `Goal: ₹${goal}`;
+
+  let monthly = 0;
+  let yearly = 0;
+  const now = new Date();
+
+  expenses.forEach((e, i) => {
+    const row = table.insertRow();
+    row.insertCell(0).innerText = "₹" + e.amount;
+    row.insertCell(1).innerHTML =
+  `${categoryIcons[e.category] || "💳"} ${e.category}`;
+    row.insertCell(2).innerText = e.date;
+    row.insertCell(3).innerHTML = `
+      <span class="tag ${e.type}">${e.type.toUpperCase()}</span>
+      <button onclick="editExpense(${i})">Edit</button>
+      <button onclick="deleteExpense(${i})">Delete</button>
+    `;
+
+    const d = new Date(e.date);
+    if(e.type !== "future" && d.getFullYear() === now.getFullYear()){
+      yearly += e.amount;
+      if(d.getMonth() === now.getMonth()){
+        monthly += e.amount;
+      }
+    }
+  });
+
+  document.getElementById("monthlyTotal").innerText = `Monthly: ₹${monthly}`;
+  document.getElementById("yearlyTotal").innerText = `Yearly: ₹${yearly}`;
+  document.getElementById("remainingTotal").innerText =
+    `Remaining: ₹${Math.max(income - monthly, 0)}`;
+
+  checkAlerts(monthly, income);
+}
+
+function filterCategory(cat){
+
+  const allExpenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+  if(cat === "all"){
+    expenses = allExpenses;
+  } else {
+    expenses = allExpenses.filter(e => e.category === cat);
+  }
+
+  render();
+}
+
+
+
+
+function editExpense(i){
+  const e = expenses[i];
+  document.getElementById("amount").value = e.amount;
+  document.getElementById("category").value = e.category;
+  document.getElementById("date").value = e.date;
+  document.getElementById("expenseType").value = e.type;
+  editIndex = i;
+}
+
+async function deleteExpense(i){
+
+  const expense = expenses[i];
+
+  // Make sure ID exists
+  const expenseId = expense.id || expense._id;
+
+  if(!expenseId){
+    alert("No ID found to delete");
+    return;
+  }
+
+  const res = await fetch(
+    `http://localhost:8081/expenses/${expenseId}`,
+    { method: "DELETE" }
+  );
+
+  if(res.ok){
+    alert("Deleted ✅");
+    loadExpenses(); // reload from backend
+  }else{
+    alert("Delete failed ❌");
+  }
+}
+
+
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem("theme", document.body.classList.contains("dark"));
+}
+
+
+
+function toggleUserMenu(){
+  const menu = document.getElementById("userDropdown");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+document.addEventListener("click", function(e){
+  const menu = document.getElementById("userDropdown");
+  const btn = document.querySelector(".user-btn");
+  if(menu && !menu.contains(e.target) && !btn.contains(e.target)){
+    menu.style.display = "none";
+  }
+});
+
+function logout(){
+
+  // remove only session data
+  localStorage.removeItem("userId");
+  localStorage.removeItem("justLoggedIn");
+
+  // optional: keep theme
+  // localStorage.removeItem("theme");
+
+  window.location.href = "index1.html";
+}
+
+
+
+function showAlert(msg){
+  const t = document.getElementById("toast");
+  t.innerText = msg;
+  t.style.display = "block";
+  setTimeout(()=>t.style.display="none",4000);
+}
+
+/* ===== AUTO SAVE PROFILE TO DB (ADD-ON) ===== */
+
+const oldSaveProfile = saveProfile;
+
+saveProfile = function(){
+
+  // run your existing logic
+  oldSaveProfile();
+
+  // ALSO save to DB
+  const userId = localStorage.getItem("userId") || "demoUser";
+
+  const profile = {
+    userId:userId,
+    primaryIncome:Number(income.value),
+    additionalIncome:Number(extraIncome.value),
+    goal:Number(goal.value)
+  };
+
+  fetch("http://localhost:8081/profile",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(profile)
+  });
+
+  console.log("Profile saved to DB ✅");
+}
+/* ===== KEEP USER DATA SAFE ===== */
+window.addEventListener("beforeunload",()=>{
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+});
+/* ===== RESTORE DATA ===== */
+
+window.addEventListener("load",()=>{
+  loadExpenses();
+  loadProfile();
+});
+
+/* ===== AUTO SYNC REPORT DATA ===== */
+
+function syncReports(){
+  fetch(`http://localhost:8081/expenses/${localStorage.getItem("userId")}`)
+  .then(res=>res.json())
+  .then(data=>{
+    localStorage.setItem("expenses", JSON.stringify(data));
+  });
+}
+
+setInterval(syncReports, 5000);
+
+/* ===== LIVE UPDATE PROFILE VIEW ===== */
+
+income.addEventListener("input", showProfileInfo);
+extraIncome.addEventListener("input", showProfileInfo);
+goal.addEventListener("input", showProfileInfo);
+
+function setTodayDate(){
+  const dateInput = document.getElementById("date");
+  if(dateInput && !dateInput.value){
+    dateInput.value = new Date().toISOString().split("T")[0];
+  }
+}
+
+window.addEventListener("load", () => {
+  const justLoggedIn = localStorage.getItem("justLoggedIn");
+
+  if (justLoggedIn === "true") {
+    showAIGreeting();
+    localStorage.removeItem("justLoggedIn"); // show only once
+  }
+});
+
+</script>
+
+<div id="toast"></div>
+<!-- ===== AI CHAT BOX ===== -->
+<div id="aiBox" style="
+position:fixed;
+bottom:100px;
+right:25px;
+width:280px;
+background:white;
+border-radius:12px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+padding:15px;
+display:none;
+z-index:999;
+">
+
+<h4>Budget AI 🤖</h4>
+
+<div id="aiContent" style="
+height:150px;
+overflow:auto;
+font-size:14px;
+margin-bottom:10px;
+"></div>
+
+<input id="aiInput" placeholder="Ask something..."
+style="width:100%;padding:8px;border-radius:8px;border:1px solid #ddd;">
+
+<button onclick="askAI()" 
+style="margin-top:8px;width:100%;">
+Send
+</button>
+
+</div>
+</body>
+</html>
