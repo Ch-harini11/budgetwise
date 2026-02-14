@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Profile | BudgetWise</title>
+
+<style>
+:root{
+  --primary:#6c63ff;
+  --secondary:#a084ff;
+  --card:#ffffff;
+}
+
+body{
+  margin:0;
+  font-family:"Segoe UI",sans-serif;
+  background:linear-gradient(135deg,#e9eafc,#f6f7ff);
+}
+
+/* HEADER */
+header{
+  background:linear-gradient(90deg,#6c63ff,#8f7cff);
+  color:white;
+  padding:15px 25px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.back-btn,.theme-btn{
+  background:rgba(255,255,255,0.2);
+  border:none;
+  color:white;
+  padding:8px 14px;
+  border-radius:18px;
+  cursor:pointer;
+}
+
+/* LAYOUT */
+.layout{
+  display:flex;
+  height:calc(100vh - 60px);
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:230px;
+  background:#1f1f2f;
+  color:white;
+  padding:20px;
+}
+
+.sidebar h3{
+  margin-bottom:20px;
+}
+
+.sidebar button{
+  display:block;
+  width:100%;
+  margin:10px 0;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#2d2d44;
+  color:white;
+  cursor:pointer;
+}
+
+.sidebar button:hover{
+  background:var(--primary);
+}
+
+/* CONTENT */
+.content{
+  flex:1;
+  padding:40px;
+  overflow:auto;
+}
+
+/* CARDS */
+.card{
+  background:var(--card);
+  padding:25px;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+  max-width:600px;
+}
+
+.center{text-align:center}
+
+/* PROFILE PIC */
+.avatar{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  object-fit:cover;
+  cursor:pointer;
+  border:4px solid var(--primary);
+}
+
+/* INPUTS */
+input,select{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+
+.btn{
+  transition:0.3s;
+}
+
+.btn:hover{
+  transform:scale(1.05);
+  box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+
+/* MODES BUTTONS STYLE */
+
+.modes-btn{
+  width:100%;
+  padding:16px;
+  margin:12px 0;
+  border:none;
+  border-radius:14px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+/* Dark/Light button */
+.theme-toggle{
+  background:linear-gradient(135deg,#6c63ff,#8f7cff);
+  color:white;
+}
+
+.theme-toggle:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 20px rgba(108,99,255,0.4);
+}
+
+/* GO PREMIUM BUTTON (highlight) */
+.premium-btn{
+  background:linear-gradient(135deg,#FFD700,#FFA500);
+  color:black;
+  font-size:17px;
+  letter-spacing:0.5px;
+  box-shadow:0 8px 20px rgba(255,193,7,0.5);
+}
+
+.premium-btn:hover{
+  transform:translateY(-3px) scale(1.02);
+  box-shadow:0 12px 25px rgba(255,193,7,0.7);
+}
+
+/* DARK MODE */
+body.dark{
+  background:#121212;
+  color:white;
+}
+
+body.dark .card{
+  background:#1f1f2f;
+  color:white;
+}
+
+body.dark input{
+  background:#2a2a3d;
+  color:white;
+  border:none;
+}
+
+.notify-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:12px 0;
+}
+
+.switch{
+  position:relative;
+  width:50px;
+  height:24px;
+}
+
+.switch input{
+  opacity:0;
+}
+
+.slider{
+  position:absolute;
+  inset:0;
+  background:#ccc;
+  border-radius:25px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.slider:before{
+  content:"";
+  position:absolute;
+  height:18px;
+  width:18px;
+  left:3px;
+  bottom:3px;
+  background:white;
+  border-radius:50%;
+  transition:.3s;
+}
+
+input:checked + .slider{
+  background:#6c63ff;
+}
+
+input:checked + .slider:before{
+  transform:translateX(26px);
+}
+/* NOTIFICATION BUTTONS */
+
+.notify-actions{
+  display:flex;
+  gap:15px;
+  margin-top:20px;
+}
+
+.save-btn,
+.test-btn{
+  flex:1;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.25s;
+}
+
+/* SAVE BUTTON */
+.save-btn{
+  background:linear-gradient(135deg,#6c63ff,#8f7cff);
+  color:white;
+  box-shadow:0 5px 15px rgba(108,99,255,0.4);
+}
+
+.save-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(108,99,255,0.6);
+}
+
+/* TEST BUTTON */
+.test-btn{
+  background:#fff;
+  color:#6c63ff;
+  border:2px solid #6c63ff;
+}
+
+.test-btn:hover{
+  background:#6c63ff;
+  color:white;
+  transform:translateY(-2px);
+}
+
+/* DARK MODE SUPPORT */
+body.dark .test-btn{
+  background:#1f1f2f;
+  color:#8f7cff;
+  border:2px solid #8f7cff;
+}
+/* NETFLIX STYLE CARD */
+
+.premium-card{
+  background:#141414;
+  color:white;
+  padding:40px;
+  border-radius:18px;
+  max-width:700px;
+}
+
+.plans{
+  display:flex;
+  gap:20px;
+  margin-top:25px;
+}
+
+.plan{
+  flex:1;
+  background:#222;
+  padding:25px;
+  border-radius:16px;
+  text-align:center;
+}
+
+.plan h1{
+  font-size:40px;
+  margin:10px 0;
+}
+
+.plan button{
+  background:#e50914;
+  border:none;
+  padding:12px;
+  width:100%;
+  color:white;
+  border-radius:10px;
+  cursor:pointer;
+  margin-top:15px;
+  font-weight:600;
+}
+
+.popular{
+  background:linear-gradient(135deg,#6c63ff,#8f7cff);
+  transform:scale(1.05);
+}
+.profile-wrap{
+  position:relative;
+  width:110px;
+  margin:auto;
+}
+
+.crown{
+  position:absolute;
+  top:-12px;
+  right:-8px;
+  font-size:28px;
+  display:none;
+}
+.gold-badge{
+  display:inline-block;
+  padding:6px 14px;
+  border-radius:20px;
+  font-weight:600;
+  background:linear-gradient(45deg,#FFD700,#FFA500);
+  color:black;
+  animation:shine 2s infinite;
+}
+
+@keyframes shine{
+  0%{box-shadow:0 0 5px gold;}
+  50%{box-shadow:0 0 20px gold;}
+  100%{box-shadow:0 0 5px gold;}
+}
+.premium-lock{
+  opacity:0.6;
+  filter:blur(0.5px);
+  position:relative;
+}
+
+.premium-lock::after{
+  content:"🔒 Premium";
+  position:absolute;
+  right:10px;
+  top:8px;
+  font-size:12px;
+  color:gold;
+}
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+</head>
+<body>
+
+<header>
+  <button class="back-btn" onclick="location='dashboard.html'">← Dashboard</button>
+  <h3>Profile</h3>
+  <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+</header>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <button onclick="showTab('profile')">👤 Profile</button>
+    <button onclick="showTab('edit')">✏️ Profile Edit</button>
+    <button onclick="showTab('notify')">🔔 Notifications</button>
+    <button onclick="showTab('modes')">🌗 Modes</button>
+    <button onclick="showTab('style')">🎨 Styles</button>
+    <button onclick="upgradeAccount()" id="upgradeBtn">
+  ⭐ Upgrade to Premium
+</button>
+
+<button onclick="logout()">🚪 Logout</button>
+
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- PROFILE TAB -->
+    <div id="profile" class="tab card center">
+      <div class="profile-wrap">
+  <img id="profilePic" class="avatar" src="https://via.placeholder.com/110">
+  <div id="crown" class="crown">👑</div>
+</div>
+
+<input type="file" id="photoInput" hidden>
+
+      <h2 id="pName">User</h2>
+      <p id="pEmail">No email</p>
+      <p id="premiumBadge" 
+   style="margin-top:8px;font-weight:600;"></p>
+<div id="statusBar" style="
+margin-top:10px;
+padding:8px;
+border-radius:10px;
+font-size:14px;
+"></div>
+
+
+    </div>
+<div id="edit" class="tab card" style="display:none;">
+
+  <h3>✏️ Edit Profile</h3>
+
+  <!-- BASIC INFO -->
+  <label>Full Name</label>
+  <input id="nameInput" placeholder="Enter full name">
+
+  <label>Email</label>
+  <input id="emailInput" placeholder="Enter email">
+
+  <label>Mobile</label>
+  <input id="mobileInput" placeholder="Enter mobile number">
+
+  <!-- PERSONAL -->
+  <label>Gender</label>
+  <select id="genderInput">
+    <option value="">Select Gender</option>
+    <option>Male</option>
+    <option>Female</option>
+  </select>
+
+  <label>Birthday</label>
+  <input type="date" id="birthdayInput">
+
+  <!-- WORK -->
+  <label>Work / Study</label>
+  <input id="jobInput" placeholder="Student / Developer / etc">
+
+  <label>Monthly Income</label>
+  <input id="incomeInput" placeholder="₹">
+
+  <label>Address</label>
+  <input id="addressInput" placeholder="City / State">
+
+  <br>
+
+  <button class="btn" onclick="saveProfile()">
+    💾 Save Changes
+  </button>
+
+  <br><br>
+
+  <!-- PLAN STATUS -->
+  <div style="text-align:center;">
+    <p id="planBadge"></p>
+  </div>
+
+</div>
+
+    <!-- EDIT TAB -->
+    <div id="style" class="tab card" style="display:none;">
+
+  <h3>🎨 Profile Styles</h3>
+  <p>Customize your app look</p>
+
+  <hr>
+
+  <!-- FONT STYLES -->
+  <h4>Font Style</h4>
+
+  <button class="btn" onclick="setFont('modern')">
+    Modern Font
+  </button>
+
+  <button class="btn" onclick="setFont('classic')" style="margin-top:10px;">
+    Classic Font
+  </button>
+
+  <hr>
+
+  <!-- COLOR THEMES -->
+  <h4>Color Themes</h4>
+
+  <button class="btn" onclick="setTheme('ocean')">
+    🌊 Ocean Theme
+  </button>
+
+  <button class="btn" onclick="setTheme('forest')" style="margin-top:10px;">
+    🌿 Forest Theme
+  </button>
+
+  <button class="btn" onmouseover="previewTheme('sunset')" onclick="setTheme('sunset')" style="margin-top:10px;">
+    🌅 Sunset Theme
+  </button>
+
+  <hr>
+
+  <!-- PREMIUM LOCK -->
+  <div style="text-align:center;margin-top:20px;">
+
+    <p style="opacity:0.7;">
+      ⭐ Premium unlocks all styles
+    </p>
+
+    <button class="btn"
+      style="background:linear-gradient(45deg,gold,orange);"
+      onclick="showTab('upgrade')">
+
+      ⭐ Go Premium to Unlock
+    </button>
+
+  </div>
+
+</div>
+
+
+    <!-- NOTIFICATIONS -->
+    <!-- NOTIFICATIONS -->
+<div id="notify" class="tab card" style="display:none;">
+
+  <h3>🔔 Notifications</h3>
+
+  <div class="notify-item">
+    Expense Alerts
+    <label class="switch">
+      <input type="checkbox" id="expenseAlert">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="notify-item">
+    Budget Alerts
+    <label class="switch">
+      <input type="checkbox" id="budgetAlert">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="notify-item">
+    Birthday Reminder 🎂
+    <label class="switch">
+      <input type="checkbox" id="birthdayAlert">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="notify-item">
+    Email Notifications 📧
+    <label class="switch">
+      <input type="checkbox" id="emailAlert">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="notify-item">
+    Weekly Summary 📊
+    <label class="switch">
+      <input type="checkbox" id="weeklyAlert">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <hr style="margin:20px 0;opacity:0.2;">
+
+  <h4>🌙 Quiet Hours</h4>
+
+  <label>From</label>
+  <input type="time" id="quietStart">
+
+  <label>To</label>
+  <input type="time" id="quietEnd">
+<div class="notify-actions">
+  <button class="save-btn" onclick="saveNotifications()">
+    💾 Save Preferences
+  </button>
+
+  <button class="test-btn" onclick="testNotification()">
+    🔔 Test Notification
+  </button>
+</div>
+
+
+</div>
+
+
+    <!-- MODES -->
+    <div id="modes" class="tab card" style="display:none;">
+  <h3>Modes</h3>
+
+  <button class="modes-btn theme-toggle"
+  onclick="toggleTheme()">
+  🌙 Toggle Dark/Light
+</button>
+
+<button class="modes-btn premium-btn"
+  onclick="showTab('upgrade')">
+  ⭐ Go Premium
+</button>
+
+
+
+
+
+  <p id="planText"></p>
+</div>
+
+
+    <!-- STYLES -->
+    <div id="style" class="tab card" style="display:none;">
+      <h3>Profile Styles</h3>
+      <p>Choose future themes 🎨</p>
+    </div>
+
+  </div>
+  <!-- UPGRADE TAB -->
+<div id="upgrade" class="tab" style="display:none;">
+
+  <div class="premium-card">
+
+    <h2>⭐ Go Premium</h2>
+    <p>Unlock powerful features</p>
+
+    <div class="plans">
+
+      <div class="plan">
+        <h3>Free</h3>
+        <h1>₹0</h1>
+        <p>Basic tracking</p>
+        <p>Limited themes</p>
+      </div>
+
+      <div class="plan popular">
+        <h3>Premium</h3>
+        <h1>₹59</h1>
+        <p>🎨 All themes</p>
+        <p>🔔 Smart alerts</p>
+        <p>📊 Pro analytics</p>
+
+        <button onclick="activatePremium()">
+          Upgrade Now
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+  <!-- PREMIUM INFO TAB -->
+<div id="premiumInfo" class="tab card" style="display:none;">
+
+  <p id="sinceText"></p>
+
+  <h3>⭐ Premium Active</h3>
+
+  <ul>
+    <li>🎨 All themes unlocked</li>
+    <li>🔔 Smart notifications</li>
+    <li>📊 Pro analytics</li>
+    <li>🚀 Priority features</li>
+  </ul>
+
+  <button class="btn"
+    onclick="alert('Subscription valid 😎')">
+    Manage Subscription
+  </button>
+
+  <button class="btn"
+    style="background:#e53935;margin-top:15px"
+    onclick="cancelPremium()">
+    Cancel Subscription
+  </button>
+
+</div>
+
+</div>
+
+
+<script src="budgetManager.js"></script>
+<script>
+
+/* THEME */
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem("theme",
+    document.body.classList.contains("dark"));
+}
+
+/* LOAD THEME */
+if(localStorage.getItem("theme")==="true"){
+  document.body.classList.add("dark");
+}
+
+/* TAB SWITCH */
+function showTab(tab){
+
+  const premium =
+    localStorage.getItem("isPremium")==="true";
+
+  // block upgrade tab for premium users
+  if(tab==="upgrade" && premium){
+    alert("You are already Premium ⭐");
+    return;
+  }
+
+  document.querySelectorAll(".tab")
+    .forEach(t=>t.style.display="none");
+
+  document.getElementById(tab).style.display="block";
+}
+
+/* PHOTO CLICK UPLOAD */
+profilePic.onclick=()=>photoInput.click();
+
+photoInput.onchange=e=>{
+  const r=new FileReader();
+  r.onload=()=>{
+    profilePic.src=r.result;
+    localStorage.setItem("profilePic",r.result);
+  };
+  r.readAsDataURL(e.target.files[0]);
+};
+
+/* SAVE PROFILE */
+function saveProfile(){
+
+  const data={
+    name:nameInput.value,
+    email:emailInput.value,
+    mobile:mobileInput.value,
+    gender:genderInput.value,
+    birthday:birthdayInput.value,
+    job:jobInput.value,
+    income:incomeInput.value,
+    address:addressInput.value
+  };
+
+  localStorage.setItem("userData", JSON.stringify(data));
+
+  alert("Profile Saved ✅");
+  loadProfile();
+}
+/* LOAD PROFILE */
+function loadProfile(){
+
+  const d = JSON.parse(localStorage.getItem("userData")) || {};
+
+  pName.innerText = d.name || "User";
+  pEmail.innerText = d.email || "No email";
+
+  nameInput.value = d.name || "";
+  emailInput.value = d.email || "";
+  mobileInput.value = d.mobile || "";
+  genderInput.value = d.gender || "";
+  birthdayInput.value = d.birthday || "";
+  jobInput.value = d.job || "";
+  incomeInput.value = d.income || "";
+  addressInput.value = d.address || "";
+
+  const pic = localStorage.getItem("profilePic");
+  if(pic) profilePic.src = pic;
+}
+
+loadProfile();
+
+/* LOGOUT */
+function logout(){
+  // remove only session info if needed
+  localStorage.removeItem("userSession");
+
+  // DO NOT clear profile data
+  location="index1.html";
+}
+
+function saveNotifications(){
+
+  const prefs={
+    expense:expenseAlert.checked,
+    budget:budgetAlert.checked,
+    birthday:birthdayAlert.checked,
+    email:emailAlert.checked,
+    weekly:weeklyAlert.checked,
+    quietStart:quietStart.value,
+    quietEnd:quietEnd.value
+  };
+
+  localStorage.setItem("notifyPrefs",JSON.stringify(prefs));
+  alert("Preferences saved ✅");
+}
+
+function loadNotifications(){
+  const p=JSON.parse(localStorage.getItem("notifyPrefs"))||{};
+
+  expenseAlert.checked=p.expense||false;
+  budgetAlert.checked=p.budget||false;
+  birthdayAlert.checked=p.birthday||false;
+  emailAlert.checked=p.email||false;
+  weeklyAlert.checked=p.weekly||false;
+  quietStart.value=p.quietStart||"";
+  quietEnd.value=p.quietEnd||"";
+}
+
+function setTheme(type){
+
+  if(localStorage.getItem("isPremium")!=="true"){
+    alert("⭐ Premium feature. Upgrade to use.");
+    return;
+  }
+
+  if(type==="ocean"){
+    document.body.style.background =
+      "linear-gradient(135deg,#1CB5E0,#000851)";
+  }
+
+  if(type==="forest"){
+    document.body.style.background =
+      "linear-gradient(135deg,#134E5E,#71B280)";
+  }
+
+  if(type==="sunset"){
+    document.body.style.background =
+      "linear-gradient(135deg,#ff9966,#ff5e62)";
+  }
+}
+
+function setFont(type){
+
+  if(localStorage.getItem("isPremium")!=="true"){
+    alert("⭐ Premium feature. Upgrade to use.");
+    return;
+  }
+
+  if(type==="modern"){
+    document.body.style.fontFamily = "Poppins, sans-serif";
+  }
+
+  if(type==="classic"){
+    document.body.style.fontFamily = "Georgia, serif";
+  }
+}
+
+function testNotification(){
+
+  if(Notification.permission!=="granted"){
+    Notification.requestPermission();
+  }else{
+    new Notification("BudgetWise 🔔",{
+      body:"This is a test alert!"
+    });
+  }
+}
+
+loadNotifications();
+// default free user
+if(!localStorage.getItem("isPremium")){
+  localStorage.setItem("isPremium","false");
+}
+
+function upgradeAccount(){
+
+  if(localStorage.getItem("isPremium")==="true"){
+    alert("You are already Premium 😎");
+    return;
+  }
+
+  if(confirm("Upgrade to Premium for ₹99/month?")){
+    localStorage.setItem("isPremium","true");
+    alert("Premium Activated 🎉");
+    checkPremiumUI();
+  }
+}
+function checkPremiumUI(){
+
+  const premium =
+    localStorage.getItem("isPremium")==="true";
+
+  const upgradeBtn =
+    document.getElementById("upgradeBtn");
+
+  if(premium){
+    upgradeBtn.innerHTML="⭐ Premium Active";
+    upgradeBtn.onclick=showPremiumInfo;
+    upgradeBtn.style.background="gold";
+    upgradeBtn.style.color="#000";
+  }else{
+    upgradeBtn.innerHTML="⭐ Upgrade to Premium";
+    upgradeBtn.onclick=()=>showTab("upgrade");
+  }
+}
+
+
+checkPremiumUI();
+function setTheme(type){
+
+  if(localStorage.getItem("isPremium")!=="true"){
+    alert("Premium Required ⭐");
+    return;
+  }
+
+  if(type==="ocean"){
+    document.body.style.background=
+      "linear-gradient(135deg,#1CB5E0,#000851)";
+  }
+
+  if(type==="forest"){
+    document.body.style.background=
+      "linear-gradient(135deg,#134E5E,#71B280)";
+  }
+}
+
+function setFont(type){
+
+  if(localStorage.getItem("isPremium")!=="true"){
+    alert("Premium Required ⭐");
+    return;
+  }
+
+  if(type==="modern"){
+    document.body.style.fontFamily=
+      "Poppins, sans-serif";
+  }
+}
+function showPlan(){
+
+  const badge =
+    document.getElementById("planBadge");
+
+  const premium =
+    localStorage.getItem("isPremium")==="true";
+
+  if(premium){
+    badge.innerHTML=
+      "<span class='gold-badge'>⭐ PREMIUM</span>";
+
+    document.getElementById("crown")
+      .style.display="block";
+
+  }else{
+    badge.innerHTML="Free Plan (₹0)";
+    badge.style.opacity=0.7;
+
+    document.getElementById("crown")
+      .style.display="none";
+  }
+}
+
+
+showPlan();
+
+function toast(msg){
+  const t = document.createElement("div");
+  t.innerText = msg;
+  t.style = `
+    position:fixed;
+    bottom:30px;
+    right:30px;
+    background:#6c63ff;
+    color:white;
+    padding:12px 20px;
+    border-radius:10px;
+  `;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2000);
+}
+toast("Theme Applied 🎨");
+
+function resetStyle(){
+  document.body.style.background="";
+  document.body.style.fontFamily="";
+  localStorage.removeItem("themeStyle");
+  localStorage.removeItem("fontStyle");
+}
+
+
+function showPlanStatus(){
+  const plan = localStorage.getItem("plan");
+  const t = document.getElementById("planText");
+
+  if(plan==="premium"){
+    t.innerHTML="⭐ Premium Active";
+    t.style.color="gold";
+  }else{
+    t.innerHTML="Free Plan (₹0)";
+  }
+}
+
+showPlanStatus();
+function goPremium(){
+
+  if(localStorage.getItem("plan")==="premium"){
+    alert("You are already a Premium user ⭐");
+    return;
+  }
+
+  <!-- window.location.href = "upgrade.html"; -->
+}
+
+function activatePremium(){
+
+  if(localStorage.getItem("isPremium")==="true"){
+    alert("Already Premium 😎");
+    return;
+  }
+
+  if(confirm("Proceed to pay ₹59 for Premium?")){
+
+    alert("Processing Payment...");
+
+    setTimeout(()=>{
+
+      localStorage.setItem("isPremium","true");
+
+      localStorage.setItem(
+        "premiumSince",
+        new Date().toLocaleDateString()
+      );
+
+      localStorage.setItem(
+        "premiumExpiry",
+        Date.now() + 30*24*60*60*1000
+      );
+
+      alert("Payment Successful 🎉");
+
+      checkPremiumUI();
+      showPlan();
+      updateStatusBar();
+      showPremiumInfo();
+
+    },1000);
+  }
+}
+
+function checkExpiry(){
+  const exp = localStorage.getItem("premiumExpiry");
+
+  if(exp && Date.now() > exp){
+    localStorage.setItem("isPremium","false");
+    alert("Premium expired!");
+  }
+}
+
+checkExpiry();
+
+function showPremiumInfo(){
+
+  showTab("premiumInfo");
+
+  const date =
+    localStorage.getItem("premiumSince");
+
+  if(date){
+    document.getElementById("sinceText")
+      .innerHTML="⭐ Premium since: "+date;
+  }
+}
+
+localStorage.setItem("themeStyle", type);
+localStorage.setItem("fontStyle", type);
+
+
+function cancelPremium(){
+  document.getElementById("cancelModal")
+    .style.display="flex";
+  resetStyle();
+}
+
+
+
+function closeModal(){
+  document.getElementById("cancelModal").style.display="none";
+}
+
+function confirmCancel(){
+
+  const reason =
+    document.getElementById("cancelReason").value;
+
+  const feedback =
+    document.getElementById("cancelFeedback").value;
+
+  if(!reason){
+    alert("Please select a reason 🙏");
+    return;
+  }
+
+  // Save feedback
+  const logs =
+    JSON.parse(localStorage.getItem("cancelLogs")) || [];
+
+  logs.push({
+    reason,
+    feedback,
+    date:new Date().toLocaleString()
+  });
+
+  localStorage.setItem(
+    "cancelLogs",
+    JSON.stringify(logs)
+  );
+
+  // Cancel premium
+  localStorage.setItem("isPremium","false");
+  localStorage.removeItem("premiumSince");
+  localStorage.removeItem("premiumExpiry");
+
+  closeModal();
+
+  alert("Premium Cancelled. Thanks for your feedback ❤️");
+
+  checkPremiumUI();
+  showPlan();
+  updateStatusBar();
+
+  showTab("profile");
+}
+
+
+function updateStatusBar(){
+  const bar = document.getElementById("statusBar");
+  const premium = localStorage.getItem("isPremium")==="true";
+
+  if(premium){
+    bar.innerHTML="🟢 Premium Active";
+    bar.style.background="#1b5e20";
+  }else{
+    bar.innerHTML="⚪ Free Plan";
+    bar.style.background="#444";
+  }
+}
+
+updateStatusBar();
+confetti({
+  particleCount:150,
+  spread:90,
+  origin:{ y:0.6 }
+});
+if(localStorage.getItem("isPremium")==="true"){
+  confetti({
+    particleCount:150,
+    spread:90,
+    origin:{ y:0.6 }
+  });
+}
+
+</script>
+<script>
+function setFont(type){
+
+  if(localStorage.getItem("isPremium")!=="true"){
+    alert("Premium Required ⭐");
+    return;
+  }
+
+  if(type==="modern"){
+    document.body.style.fontFamily = "Poppins, sans-serif";
+  }
+
+  if(type==="classic"){
+    document.body.style.fontFamily = "Georgia, serif";
+  }
+
+  localStorage.setItem("fontStyle", type);
+}
+
+// LOAD SAVED FONT
+const savedFont = localStorage.getItem("fontStyle");
+if(savedFont){
+  setFont(savedFont);
+}
+</script>
+<script>
+function setTheme(type){
+
+  if(localStorage.getItem("isPremium")!=="true"){
+    alert("Premium Required ⭐");
+    return;
+  }
+
+  if(type==="ocean"){
+    document.body.style.background =
+      "linear-gradient(135deg,#2193b0,#6dd5ed)";
+  }
+
+  if(type==="forest"){
+    document.body.style.background =
+      "linear-gradient(135deg,#134E5E,#71B280)";
+  }
+
+  if(type==="sunset"){
+    document.body.style.background =
+      "linear-gradient(135deg,#ff7e5f,#feb47b)";
+  }
+
+  localStorage.setItem("themeStyle", type);
+}
+
+// LOAD SAVED THEME
+const savedTheme = localStorage.getItem("themeStyle");
+if(savedTheme){
+  setTheme(savedTheme);
+}
+function previewTheme(type){
+  if(type==="sunset"){
+    document.body.style.background =
+      "linear-gradient(135deg,#ff7e5f,#feb47b)";
+  }
+}
+
+</script>
+
+
+<div id="cancelModal" style="
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.7);
+justify-content:center;
+align-items:center;
+z-index:999;
+">
+
+  <div style="
+  background:#141414;
+  color:white;
+  padding:30px;
+  border-radius:14px;
+  text-align:left;
+  max-width:380px;
+  width:95%;
+  ">
+
+    <h3>Cancel Premium?</h3>
+    <p>We're sad to see you go 😢</p>
+
+    <label>Reason for cancelling:</label>
+
+    <select id="cancelReason" style="
+      width:100%;
+      padding:10px;
+      margin:10px 0;
+      border-radius:8px;
+    ">
+      <option value="">Select reason</option>
+      <option>Too expensive</option>
+      <option>Not using enough</option>
+      <option>Missing features</option>
+      <option>Temporary break</option>
+      <option>Other</option>
+    </select>
+
+    <label>Feedback (optional):</label>
+    <textarea id="cancelFeedback" placeholder="Tell us how we can improve..."
+      style="
+      width:100%;
+      padding:10px;
+      border-radius:8px;
+      height:70px;
+      "></textarea>
+
+    <button class="btn" onclick="confirmCancel()">
+      Submit & Cancel
+    </button>
+
+    <button class="btn"
+      style="background:gray;margin-top:10px"
+      onclick="closeModal()">
+      Keep Premium
+    </button>
+
+  </div>
+</div>
+
+
+</body>
+</html>
