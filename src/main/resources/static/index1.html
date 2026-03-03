@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BudgetWise</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(120deg, #667eea, #764ba2);
+      color: white;
+      transition: 0.4s;
+      cursor: none;
+    }
+
+    body.dark {
+      background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+    }
+
+    .header {
+      width: 100%;
+      padding: 18px 30px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+
+    .header-left {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .header-center {
+      text-align: center;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .header-center h1 {
+      margin: 0;
+      font-size: 24px;
+      background: linear-gradient(90deg, #fff, #ffd86f, #fff);
+      background-size: 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 6s infinite linear;
+    }
+
+    .header-center p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: #e0e0e0;
+    }
+
+    @keyframes shine {
+      from { background-position: 0%; }
+      to { background-position: 200%; }
+    }
+
+    .header::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 92%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #ffd86f, #b993ff, transparent);
+      box-shadow: 0 0 12px rgba(185, 147, 255, 0.6);
+    }
+
+    body.dark .header::after {
+      box-shadow: 0 0 16px rgba(79, 172, 254, 0.8);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 18px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .nav span {
+      cursor: pointer;
+      opacity: 0.9;
+    }
+
+    .nav span:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    .toggle {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 50%;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 18px;
+      color: white;
+      backdrop-filter: blur(6px);
+    }
+
+    .landing {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding-top: 140px;
+    }
+
+    .content {
+      max-width: 600px;
+      padding: 20px;
+    }
+
+    .content h2 {
+      font-size: 42px;
+      margin-bottom: 15px;
+    }
+
+    .content p {
+      font-size: 18px;
+      margin-bottom: 30px;
+      color: #e0e0e0;
+    }
+
+    .main-btn {
+      padding: 14px 36px;
+      font-size: 16px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      background: white;
+      color: #667eea;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .main-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .store-text {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #e0e0e0;
+    }
+
+    .logo {
+      height: 38px;
+      cursor: pointer;
+    }
+
+    .cursor {
+      position: fixed;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffd86f, #b993ff);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      box-shadow: 0 0 12px rgba(185, 147, 255, 0.7);
+    }
+
+
+.menu-container {
+  position: relative;
+}
+
+.menu-icon {
+  font-size: 22px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.menu-dropdown {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 10px;
+  padding: 10px 0;
+  display: none;
+  min-width: 180px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+}
+
+.menu-dropdown div {
+  padding: 10px 18px;
+  font-size: 14px;
+  cursor: pointer;
+  color: white;
+}
+
+.menu-dropdown div:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+
+.how-section {
+  width: 100%;
+  padding: 80px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.how-container {
+  width: 90%;
+  max-width: 1100px;
+  display: flex;
+  align-items: center;
+  gap: 60px;
+}
+
+.how-image img {
+  width: 400px;
+}
+
+.how-content h2 {
+  font-size: 36px;
+  margin-bottom: 16px;
+}
+
+.how-content p {
+  font-size: 17px;
+  line-height: 1.6;
+  color: #e0e0e0;
+  margin-bottom: 28px;
+}
+
+.learn-btn {
+  padding: 12px 34px;
+  border-radius: 30px;
+  border: none;
+  background: white;
+  color: #667eea;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.learn-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+}
+
+
+.how-image-group {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.phone-img {
+  width: 350px;
+}
+
+.lady-img {
+  width: 200px;
+}
+
+
+.phone-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.phone-heading {
+  margin-top: 34px;        
+  font-size: 26px;        
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  letter-spacing: 0.5px;
+   transform: translateX(300px);
+}
+
+
+.great-budget-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #e8f5e9; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 20px;
+}
+
+.great-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: #2f4f2f;
+  margin-top: 60px;
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+.great-images {
+  display: flex;
+  align-items: flex-end;
+  gap: 40px;
+  margin-bottom: 50px;
+}
+
+.gb-img {
+  max-width: 260px;
+  height: auto;
+}
+
+.great-text {
+  text-align: center;
+}
+
+.great-text h1 {
+  font-size: 36px;
+  color: #2f4f2f;
+  margin-bottom: 12px;
+}
+
+.great-text p {
+  font-size: 18px;
+  color: #4f6f4f;
+}
+
+
+.section-nav {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  padding: 18px 0;
+  font-size: 15px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(6px);
+  position: sticky;
+  top: 70px; 
+  z-index: 5;
+}
+
+.section-nav span {
+  cursor: pointer;
+  color: #2f4f2f;
+}
+
+.section-nav span:hover {
+  text-decoration: underline;
+}
+
+.video-nav {
+  position: absolute;
+  top: 90px; 
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  font-size: 15px;
+  font-weight: 500;
+  z-index: 2;
+}
+
+.video-nav span {
+  cursor: pointer;
+  color: white;
+}
+
+.video-nav span:hover {
+  text-decoration: underline;
+}
+
+.video-nav {
+  letter-spacing: 0.3px;
+}
+
+.video-nav span {
+  padding: 6px 10px;
+  border-radius: 16px;
+  transition: all 0.25s ease;
+}
+
+.video-nav span:hover {
+  background: rgba(255,255,255,0.15);
+  text-decoration: none;
+}
+
+.content h2 {
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.content p {
+  font-size: 19px;
+  line-height: 1.6;
+  max-width: 520px;
+  margin: 0 auto 30px;
+}
+
+.content img {
+  animation: heroFloat 8s ease-in-out infinite;
+}
+
+@keyframes heroFloat {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top, rgba(255,255,255,0.12), transparent 60%);
+  pointer-events: none;
+}
+
+.how-container {
+  align-items: center;
+  gap: 80px;  
+}
+
+.how-content p {
+  font-size: 18px;
+  line-height: 1.7;
+  max-width: 460px;
+  opacity: 0.95;
+}
+
+.learn-btn {
+  box-shadow: 0 10px 26px rgba(0,0,0,0.25);
+}
+
+.learn-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(0,0,0,0.35);
+}
+
+.phone-img {
+  animation: phoneFloat 7s ease-in-out infinite;
+}
+
+@keyframes phoneFloat {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+  100% { transform: translateY(0); }
+}
+
+
+.lady-img {
+  animation: ladyFade 2.5s ease forwards;
+  opacity: 0;
+}
+
+@keyframes ladyFade {
+  to {
+    opacity: 1;
+  }
+}
+
+.phone-block {
+  position: relative;
+}
+
+.phone-block::before {
+  content: "";
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%);
+  z-index: -1;
+}
+
+.great-budget-page {
+  padding: 120px 20px 100px; 
+}
+
+
+.great-images {
+  gap: 60px;
+}
+
+.gb-img {
+  max-width: 260px;
+  filter: drop-shadow(0 12px 28px rgba(0,0,0,0.15));
+  transition: transform 0.4s ease;
+}
+
+.gb-img:hover {
+  transform: translateY(-8px);
+}
+
+  </style>
+</head>
+
+<body>
+
+  <div class="cursor"></div>
+
+  <div class="header">
+    <div class="header-left">
+      <img src="logo.jpeg" class="logo">
+    </div>
+
+    <div class="header-center">
+      <h1>BudgetWise</h1>
+      <p>An Expense Tracker & Budget Advisor</p>
+    </div>
+
+    <div class="header-right">
+      <div class="menu-container">
+  <div class="menu-icon" onclick="toggleMenu()">☰</div>
+
+  <div class="menu-dropdown" id="menu">
+    <div>How it Works</div>
+    <div>What you get</div>
+    <div>The Goodbudget Way</div>
+    <div>Pricing</div>
+  </div>
+</div>
+
+      <button class="toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+  
+
+  <div class="landing">
+<div class="video-nav">
+  <span onclick="scrollToSection('how-it-works')">How it Works</span>
+  <span>What you get</span>
+  <span>The Goodbudget Way</span>
+  <span>Pricing</span>
+  <span onclick="scrollToSection('great-budget')">Great budget software</span>
+</div>
+    
+    <div class="content">
+     <img src="https://goodbudget.com/wp-content/uploads/2019/10/09160428/main-grocery-store-1-768x533.png" width="400" alt="Grocery Store Illustration">
+      <h2>Budget with a why</h2>
+
+      <p>Spend, save, and give toward what's important in life</p>
+
+      <button class="main-btn" onclick="goToLogin()">CREATE YOUR GOODBUDGET</button>
+
+      <div class="store-text">
+        Budget tracking app available on  🤖 Android | 🍎 Apple
+      </div>
+    </div>
+  </div>
+
+
+<script>
+  function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({
+      behavior: "smooth"
+    });
+  }
+</script>
+
+<div class="how-section">
+  <div class="how-container">
+
+    <div class="how-image-group">
+  <div class="phone-block">
+    <img
+      src="https://goodbudget.com/wp-content/uploads/2019/08/02120416/iphone.png"
+      alt="Goodbudget App"
+      class="phone-img"
+    >
+
+  </div>
+
+  <img
+    src="https://goodbudget.com/wp-content/uploads/2019/03/27223646/lady.svg"
+    alt="Lady Illustration"
+    class="lady-img"
+  >
+</div>
+
+    <div class="how-content" id="how-it-works">
+      <h2>How it works</h2>
+      <p>
+        Goodbudget is a budget tracker for the modern age. Say no more to carrying
+        paper envelopes. This virtual budget program keeps you on track with family
+        and friends with the time-tested envelope budgeting method.
+      </p>
+
+      <button class="learn-btn">Learn more</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="great-budget-page" id="great-budget">
+
+  <div class="great-title">
+    Great budget software
+  </div>
+
+  <div class="great-images">
+    <img
+      src="https://goodbudget.com/wp-content/uploads/2019/05/14224232/laptop3.png"
+      alt="Laptop"
+      class="gb-img"
+    >
+
+    <img
+      src="https://goodbudget.com/wp-content/uploads/2019/06/10155220/android-v2.png"
+      alt="Android App"
+      class="gb-img"
+    >
+
+    <img
+      src="https://goodbudget.com/wp-content/uploads/2019/06/10155313/whatyouget-sync-and-share-couple-768x643.png"
+      alt="Couple Sync"
+      class="gb-img"
+    >
+  </div>
+
+  <div class="great-text">
+    <h1>Budget software built for daily life</h1>
+    <p>Get Goodbudget iPhone and Android Apps</p>
+  </div>
+
+</div>
+
+  <script>
+    const cursor = document.querySelector(".cursor");
+    document.addEventListener("mousemove", e => {
+      cursor.style.top = e.clientY + "px";
+      cursor.style.left = e.clientX + "px";
+    });
+
+    function goToLogin() {
+      window.location.href = "login-signup.html";
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+    }
+
+  </script>
+
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+  }
+
+  document.addEventListener("click", function (e) {
+    const menu = document.getElementById("menu");
+    const icon = document.querySelector(".menu-icon");
+
+    if (!icon.contains(e.target) && !menu.contains(e.target)) {
+      menu.style.display = "none";
+    }
+  });
+</script>
+<script>
+  fetch("http://localhost:8080/hello")
+    .then(res => res.text())
+    .then(data => console.log("Backend says:", data))
+    .catch(err => console.error(err));
+</script>
+
+<script>
+  window.onload = function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromAuth = urlParams.get("fromAuth");
+
+    if (fromAuth === "1") {
+      const btn = document.querySelector(".main-btn");
+
+      if (btn) {
+        btn.innerText = "Swipe up to know more";
+      }
+    }
+  };
+</script>
+
+</body>
+</html>

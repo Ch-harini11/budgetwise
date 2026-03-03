@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BudgetWise | Reports</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family: "Segoe UI", sans-serif;
+  background:#f4f6f8;
+}
+
+/* ===== HEADER ===== */
+.header{
+  display:grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items:center;
+  padding:14px 24px;
+  background:linear-gradient(90deg,#6c63ff,#8f7cff);
+  color:white;
+}
+
+.back{
+  cursor:pointer;
+  font-size:18px;
+}
+
+.tabs{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+}
+
+.tab{
+  padding:8px 18px;
+  border-radius:20px;
+  cursor:pointer;
+  background:rgba(255,255,255,0.2);
+  font-size:14px;
+}
+
+.tab.active{
+  background:white;
+  color:#6c63ff;
+  font-weight:600;
+}
+
+
+
+.theme{
+  text-align:right;
+}
+
+.theme button{
+  border:none;
+  background:rgba(255,255,255,0.2);
+  color:white;
+  padding:8px 12px;
+  border-radius:50%;
+  cursor:pointer;
+}
+
+/* ===== CONTENT ===== */
+.container{
+  padding:30px;
+}
+
+.cards{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  margin-bottom:25px;
+}
+
+.card{
+  flex:1;
+  min-width:260px;
+  background:white;
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.1);
+}
+
+.amount{
+  font-size:28px;
+  font-weight:700;
+}
+
+.progress{
+  height:10px;
+  background:#ddd;
+  border-radius:10px;
+  margin:10px 0;
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  width:82%;
+  background:#2ecc71;
+  border-radius:10px;
+}
+
+.charts{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:20px;
+  margin-top:20px;
+}
+
+/* Responsive */
+@media (max-width:1000px){
+  .charts{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media (max-width:600px){
+  .charts{
+    grid-template-columns:1fr;
+  }
+}
+
+.chart-box{
+  background:white;
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.1);
+  height:350px;
+  display:flex;
+  flex-direction:column;
+}
+
+.chart-box canvas{
+  flex:1;
+}
+
+.hidden{display:none;}
+
+body.dark{
+  background: #121212;
+  color: #f1f1f1;
+}
+
+body.dark .card,
+body.dark .chart-box{
+  background: #1f1f2f;
+  color: #ffffff;
+}
+
+body.dark h1,
+body.dark h3{
+  color: #ffffff;
+}
+
+.chart-box{
+  transition:0.3s;
+}
+/* PRO BACKUP VISIBILITY FIX */
+
+.backup-card{
+  background:linear-gradient(145deg,#ffffff,#eef1ff);
+  color:#222;
+}
+
+.backup-card h3,
+.backup-card p,
+.backup-card span,
+.backup-card div,
+.backup-card li{
+  color:#222;
+}
+
+/* DARK MODE FIX */
+body.dark .backup-card{
+  background:#1f1f2f;
+  color:white;
+}
+
+body.dark .backup-card h3,
+body.dark .backup-card p,
+body.dark .backup-card span,
+body.dark .backup-card div,
+body.dark .backup-card li{
+  color:white;
+}
+
+.chart-box:hover{
+  transform:translateY(-6px);
+  box-shadow:0 15px 35px rgba(0,0,0,0.15);
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== HEADER ===== -->
+<div class="header">
+  <div class="back" onclick="goBack()">⬅ Back</div>
+
+  <div class="tabs">
+  <div class="tab active" onclick="showMonthly(this)">Monthly</div>
+  <div class="tab" onclick="showYearly(this)">Yearly</div>
+  <div class="tab" onclick="showOverall(this)">Overall</div>
+</div>
+
+
+  
+
+  <div class="theme">
+    <button onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+<script>
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem(
+    "theme",
+    document.body.classList.contains("dark")
+  );
+}
+
+// Apply saved theme on load
+window.onload = async () => {
+
+  if(localStorage.getItem("theme") === "true"){
+    document.body.classList.add("dark");
+  }
+
+  // 🔥 Fetch latest expenses from backend
+  const userId = localStorage.getItem("userId") || "demoUser";
+
+  const res = await fetch(
+    `http://localhost:8081/expenses/${userId}`
+  );
+
+  const data = await res.json();
+
+  // update localStorage
+  localStorage.setItem("expenses", JSON.stringify(data));
+
+  // draw charts using fresh data
+  showMonthly(document.querySelector(".tab.active"));
+};
+
+
+</script>
+<script src="budgetManager.js"></script>
+<!-- ===== MONTHLY ===== -->
+<div class="container" id="monthly">
+  <div class="cards">
+    <div class="card">
+      <h3>Monthly Budget</h3>
+      <div class="amount">0</div>
+    </div>
+
+    <div class="card">
+      <h3>Amount Spent</h3>
+      <div class="amount">0</div>
+      <div class="progress"><span></span></div>
+      <p style="color:#2ecc71;font-weight:600;">0</p>
+    </div>
+  </div>
+
+  <div class="charts">
+    <div class="chart-box">
+      <h3>Expense Breakdown</h3>
+      <canvas id="monthlyPie"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h3>Spending Trend</h3>
+      <canvas id="monthlyLine"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h3>Category Distribution</h3>
+      <canvas id="monthlyBar"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ===== YEARLY ===== -->
+<!-- ===== YEARLY ===== -->
+<div class="container hidden" id="yearly">
+  <div class="cards">
+    <div class="card">
+      <h3>Yearly Budget</h3>
+      <div class="amount" id="yearlyBudget">₹0</div>
+    </div>
+
+    <div class="card">
+      <h3>Total Spent</h3>
+      <div class="amount" id="yearlySpent">₹0</div>
+    </div>
+  </div>
+
+  <div class="charts">
+    <div class="chart-box">
+      <h3>Yearly Spending Trend</h3>
+      <canvas id="yearlyLine"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h3>Category Contribution</h3>
+      <canvas id="yearlyBar"></canvas>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== OVERALL ===== -->
+<div class="container hidden" id="overall">
+  <div class="cards">
+  <div class="card">
+    <h3>Remaining</h3>
+    <div class="amount" id="overallRemaining">₹0</div>
+  </div>
+
+  <div class="card">
+    <h3>Monthly Avg</h3>
+    <div class="amount" id="overallMonthlyAvg">₹0</div>
+  </div>
+
+  <div class="card">
+    <h3>Yearly Total</h3>
+    <div class="amount" id="overallYearlyTotal">₹0</div>
+  </div>
+</div>
+
+
+  <div class="charts">
+  <div class="chart-box">
+    <h3>Monthly Spending Trend</h3>
+    <canvas id="overallMonthlyLine"></canvas>
+  </div>
+
+  <div class="chart-box">
+    <h3>Yearly Spending Trend</h3>
+    <canvas id="overallYearlyLine"></canvas>
+  </div>
+  </div>
+
+</div>
+
+
+<script>
+/* ========= THEME ========= */
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem(
+    "theme",
+    document.body.classList.contains("dark")
+  );
+}
+
+/* ========= APPLY THEME + LOAD DATA ========= */
+window.onload = async () => {
+
+  if(localStorage.getItem("theme") === "true"){
+    document.body.classList.add("dark");
+  }
+
+  // Always refresh expenses from backend
+  const userId = localStorage.getItem("userId") || "demoUser";
+
+  const res = await fetch(
+    `http://localhost:8081/expenses/${userId}`
+  );
+
+  const data = await res.json();
+  localStorage.setItem("expenses", JSON.stringify(data));
+
+  // Default tab
+  showMonthly(document.querySelector(".tab.active"));
+};
+
+
+/* ========= CHART STORAGE ========= */
+let charts = {};
+
+function createChart(id, config) {
+  if (charts[id]) charts[id].destroy();
+  charts[id] = new Chart(document.getElementById(id), config);
+}
+
+/* ========= TAB CONTROL ========= */
+function activateTab(el, viewId) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  el.classList.add("active");
+
+  document.querySelectorAll(".container").forEach(c => c.classList.add("hidden"));
+  document.getElementById(viewId).classList.remove("hidden");
+}
+
+/* ========= FORMAT ========= */
+function formatINR(num){
+  return "₹" + Number(num).toLocaleString("en-IN");
+}
+
+/* =================================================
+                MONTHLY VIEW
+================================================= */
+function showMonthly(el) {
+
+  activateTab(el, "monthly");
+
+  const expenses = BudgetManager.getExpenses();
+  const income   = BudgetManager.getMonthlyIncome();
+  const total    = BudgetManager.getMonthlySpent();
+
+  const now = new Date();
+  const categoryMap = {};
+  const weekly = [0,0,0,0];
+
+  expenses.forEach(e=>{
+    const d = new Date(e.date);
+
+    if(d.getMonth()===now.getMonth() &&
+       d.getFullYear()===now.getFullYear()){
+
+      categoryMap[e.category] =
+        (categoryMap[e.category]||0)+e.amount;
+
+      const week = Math.min(3, Math.floor(d.getDate()/7));
+      weekly[week]+=e.amount;
+    }
+  });
+
+  document.querySelector("#monthly .cards .card:nth-child(1) .amount")
+    .innerText = formatINR(income);
+
+  document.querySelector("#monthly .cards .card:nth-child(2) .amount")
+    .innerText = formatINR(total);
+
+  const percent = income ? (total/income)*100 : 0;
+  document.querySelector("#monthly .progress span")
+    .style.width = percent+"%";
+
+  /* Charts */
+  createChart("monthlyPie",{
+    type:"doughnut",
+    data:{
+      labels:Object.keys(categoryMap),
+      datasets:[{
+        data:Object.values(categoryMap),
+        backgroundColor:['#6c63ff','#2ecc71','#f39c12','#e74c3c']
+      }]
+    }
+  });
+
+  createChart("monthlyLine",{
+    type:"line",
+    data:{
+      labels:["Week1","Week2","Week3","Week4"],
+      datasets:[{
+        data:weekly,
+        borderColor:"#6c63ff",
+        fill:true
+      }]
+    }
+  });
+
+  createChart("monthlyBar",{
+    type:"bar",
+    data:{
+      labels:Object.keys(categoryMap),
+      datasets:[{
+        data:Object.values(categoryMap),
+        backgroundColor:"#6c63ff"
+      }]
+    }
+  });
+}
+
+
+/* =================================================
+                YEARLY VIEW
+================================================= */
+function showYearly(el) {
+
+  activateTab(el, "yearly");
+
+  const expenses = BudgetManager.getExpenses();
+  const monthlyIncome = BudgetManager.getMonthlyIncome();
+
+  const yearlyBudget = monthlyIncome * 12;
+  const yearlySpent  = BudgetManager.getYearlySpent();
+
+  const now = new Date();
+  const months = Array(12).fill(0);
+  const categoryMap = {};
+
+  expenses.forEach(e=>{
+    const d = new Date(e.date);
+
+    if(d.getFullYear()===now.getFullYear()){
+      months[d.getMonth()] += e.amount;
+
+      categoryMap[e.category] =
+        (categoryMap[e.category]||0)+e.amount;
+    }
+  });
+
+  document.getElementById("yearlyBudget")
+    .innerText = formatINR(yearlyBudget);
+
+  document.getElementById("yearlySpent")
+    .innerText = formatINR(yearlySpent);
+
+  createChart("yearlyLine",{
+    type:"line",
+    data:{
+      labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      datasets:[{
+        data:months,
+        borderColor:"#6c63ff",
+        fill:true
+      }]
+    }
+  });
+
+  createChart("yearlyBar",{
+    type:"bar",
+    data:{
+      labels:Object.keys(categoryMap),
+      datasets:[{
+        data:Object.values(categoryMap),
+        backgroundColor:"#2ecc71"
+      }]
+    }
+  });
+}
+
+
+/* =================================================
+                OVERALL VIEW
+================================================= */
+function showOverall(el) {
+
+  activateTab(el, "overall");
+
+  const expenses = BudgetManager.getExpenses();
+
+  const monthlyIncome = BudgetManager.getMonthlyIncome();
+  const yearlyTotal   = BudgetManager.getYearlySpent();
+  const remaining     = BudgetManager.getRemaining();
+
+  let monthlyMap = {};
+  let categoryMap = {};
+  const months = Array(12).fill(0);
+
+  expenses.forEach(e=>{
+    const d = new Date(e.date);
+
+    months[d.getMonth()] += e.amount;
+
+    monthlyMap[d.getMonth()] =
+      (monthlyMap[d.getMonth()]||0)+e.amount;
+
+    categoryMap[e.category] =
+      (categoryMap[e.category]||0)+e.amount;
+  });
+
+  const monthsCount =
+    Object.keys(monthlyMap).length || 1;
+
+  const monthlyAvg =
+    Math.round(yearlyTotal / monthsCount);
+
+  document.getElementById("overallRemaining")
+    .innerText = formatINR(remaining);
+
+  document.getElementById("overallMonthlyAvg")
+    .innerText = formatINR(monthlyAvg);
+
+  document.getElementById("overallYearlyTotal")
+    .innerText = formatINR(yearlyTotal);
+
+  createChart("overallMonthlyLine",{
+    type:"line",
+    data:{
+      labels:Object.keys(monthlyMap).map(m=>`Month ${Number(m)+1}`),
+      datasets:[{
+        data:Object.values(monthlyMap),
+        borderColor:"#2ecc71",
+        fill:true
+      }]
+    }
+  });
+
+  createChart("overallYearlyLine",{
+    type:"line",
+    data:{
+      labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      datasets:[{
+        data:months,
+        borderColor:"#6c63ff",
+        fill:true
+      }]
+    }
+  });
+}
+
+
+/* ========= NAV ========= */
+function goBack(){
+  window.location.href="dashboard.html";
+}
+</script>
+
+
+</body>
+</html>
