@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expenses — BudgetWise</title>
+    <link rel="stylesheet" href="css/app.css" />
+</head>
+
+<body>
+    <div id="toast-container"></div>
+
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="logo-icon">💰</div>
+                <h2>BudgetWise</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-label">Menu</div>
+                <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+                <a href="expenses.html" class="nav-item active"><span class="nav-icon">💸</span> Expenses</a>
+                <a href="budget.html" class="nav-item"><span class="nav-icon">📊</span> Budget</a>
+                <a href="advisor.html" class="nav-item"><span class="nav-icon">🤖</span> AI Advisor</a>
+                <a href="reports.html" class="nav-item"><span class="nav-icon">📈</span> Reports</a>
+                <div class="nav-section-label">Account</div>
+                <button class="nav-item w-full" onclick="logout()"
+                    style="background:none;border:none;width:100%;text-align:left;cursor:pointer;"><span
+                        class="nav-icon">🚪</span> Logout</button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">BW</div>
+                    <div>
+                        <div class="user-name" id="userName">User</div>
+                        <div class="user-email" id="userEmail">—</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h3>Expenses</h3>
+                    <p>Track and manage your spending</p>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Add Expense</button>
+                    <button class="theme-toggle">🌙</button>
+                    <button class="hamburger"
+                        onclick="document.getElementById('sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('visible')">☰</button>
+                </div>
+            </header>
+            <div class="sidebar-overlay"
+                onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('visible')">
+            </div>
+
+            <main class="page-content">
+                <!-- Filters -->
+                <div class="card" style="padding:16px 20px;margin-bottom:20px;">
+                    <div class="flex items-center gap-2" style="flex-wrap:wrap;">
+                        <select id="filterCategory" class="form-select" style="width:180px;" onchange="loadExpenses()">
+                            <option value="">All Categories</option>
+                            <option>Food</option>
+                            <option>Transport</option>
+                            <option>Shopping</option>
+                            <option>Entertainment</option>
+                            <option>Healthcare</option>
+                            <option>Education</option>
+                            <option>Utilities</option>
+                            <option>Rent</option>
+                            <option>Travel</option>
+                            <option>Other</option>
+                        </select>
+                        <input type="month" id="filterMonth" class="form-input" style="width:180px;"
+                            onchange="loadExpenses()" />
+                        <button class="btn btn-secondary btn-sm" onclick="clearFilters()">Clear</button>
+                        <span id="totalLabel"
+                            style="margin-left:auto;font-size:14px;color:var(--text-secondary);font-weight:600;"></span>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="card" style="padding:24px;">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                    <th>Tags</th>
+                                    <th>Amount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expenseBody">
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="empty-state">
+                                            <div class="empty-icon">💸</div>
+                                            <h3>No expenses found</h3>
+                                            <p>Add your first expense using the button above.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay hidden" id="expenseModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Add Expense</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <form id="expenseForm">
+                <div class="form-group">
+                    <label class="form-label">Amount (₹)</label>
+                    <input type="number" id="exAmount" class="form-input" placeholder="0.00" step="0.01" min="0.01"
+                        required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select id="exCategory" class="form-select" required>
+                        <option value="">Select category</option>
+                        <option>Food</option>
+                        <option>Dining</option>
+                        <option>Transport</option>
+                        <option>Shopping</option>
+                        <option>Entertainment</option>
+                        <option>Healthcare</option>
+                        <option>Education</option>
+                        <option>Utilities</option>
+                        <option>Rent</option>
+                        <option>Travel</option>
+                        <option>Fitness</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <input type="text" id="exDesc" class="form-input" placeholder="e.g. Grocery shopping" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date</label>
+                    <input type="date" id="exDate" class="form-input" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tags (comma-separated)</label>
+                    <input type="text" id="exTags" class="form-input" placeholder="e.g. groceries, weekly" />
+                </div>
+                <div class="flex gap-1 mt-2">
+                    <button type="button" class="btn btn-secondary" style="flex:1"
+                        onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1" id="saveBtn">Save Expense</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/expenses.js"></script>
+</body>
+
+</html>

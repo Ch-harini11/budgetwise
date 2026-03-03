@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BudgetWise — Master Your Finances with AI</title>
+    <meta name="description"
+        content="BudgetWise is your personal AI financial advisor. Track expenses, plan budgets, and get smart insights to achieve your financial goals." />
+    <link rel="stylesheet" href="css/app.css" />
+    <style>
+        /* Landing Page Specific Elegant Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Elegant Navbar */
+        .landing-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 6%;
+            background: rgba(var(--bg-primary-rgb), 0.85);
+            /* Need fallback */
+            background: var(--bg-primary);
+            /* Use solid or add a tiny transparency if desired, but sticking to solid to stay safe */
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-sizing: border-box;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] .landing-header {
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .landing-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .nav-links a.nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .nav-links a.nav-link:hover {
+            color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 160px 5% 120px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.08) 0%, var(--bg-primary) 70%);
+            transition: background 0.5s ease;
+        }
+
+        [data-theme="light"] .hero-section {
+            background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.05) 30%, var(--bg-primary) 70%);
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 999px;
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            max-width: 900px;
+            background: linear-gradient(to right, var(--text-primary) 30%, var(--text-muted) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .hero-title span {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.25rem);
+            color: var(--text-secondary);
+            max-width: 650px;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        .btn-elegant {
+            padding: 14px 32px;
+            font-size: 1rem;
+            border-radius: var(--radius-xl);
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary.btn-elegant {
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+        }
+
+        .hero-image-wrapper {
+            margin-top: 5rem;
+            width: 100%;
+            max-width: 1100px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            animation: fadeInUp 1.4s ease-out;
+            background: var(--bg-card);
+        }
+
+        [data-theme="light"] .hero-image-wrapper {
+            box-shadow: 0 30px 80px -20px rgba(99, 102, 241, 0.25);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .hero-image-wrapper::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(to bottom, transparent 0%, var(--bg-primary) 100%);
+            pointer-events: none;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 6rem 5%;
+            background-color: var(--bg-primary);
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-subtitle {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            text-align: left;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="light"] .feature-card {
+            background: #ffffff;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.1);
+        }
+
+        [data-theme="light"] .feature-card:hover {
+            box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.25);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .feature-icon-wrapper {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 1.8rem;
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.3px;
+        }
+
+        .feature-desc {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 4rem 5%;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        [data-theme="light"] .stats-section {
+            background: #ffffff;
+            border-top: 1px solid rgba(99, 102, 241, 0.1);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+            box-shadow: inset 0 0 40px rgba(99, 102, 241, 0.03);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            gap: 2rem;
+        }
+
+        .stat-item h4 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .stat-item p {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 8rem 5%;
+            text-align: center;
+            background: radial-gradient(circle at 50% 100%, rgba(99, 102, 241, 0.12) 0%, var(--bg-primary) 60%);
+            margin-top: auto;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.5s ease;
+        }
+
+        [data-theme="light"] .cta-section {
+            background: radial-gradient(circle at 50% 100%, rgba(99, 102, 241, 0.18) 0%, rgba(139, 92, 246, 0.08) 40%, var(--bg-primary) 70%);
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .cta-section p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        .footer {
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            background: var(--bg-primary);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .nav-links .nav-link {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+    <script>
+        const token = localStorage.getItem('bw_token');
+        if (token && window.location.pathname.endsWith('index.html')) {
+            // Optional auto-redirect
+            // window.location.replace('dashboard.html');
+        }
+    </script>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <header class="landing-header">
+        <a href="index.html" class="landing-logo">
+            <span class="logo-icon"
+                style="background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">💰</span>
+            BudgetWise
+        </a>
+        <div class="nav-links">
+            <button class="theme-toggle" title="Toggle theme"
+                style="background:none;border:none;cursor:pointer;font-size:1.4rem;padding:0;">🌙</button>
+            <a href="login.html" class="nav-link">Sign In</a>
+            <a href="signup.html" class="btn btn-primary btn-sm btn-elegant" style="padding: 10px 20px;">Get Started</a>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero-section">
+        <div class="hero-badge">✨ Meet the future of personal finance</div>
+        <h1 class="hero-title">Track, save, and grow with <span>AI guidance</span></h1>
+        <p class="hero-subtitle">BudgetWise is a beautifully designed financial companion that brings clarity to your
+            spending and helps you build wealth intelligently.</p>
+
+        <div class="cta-buttons">
+            <a href="signup.html" class="btn btn-primary btn-elegant">Start Your Journey</a>
+            <a href="#features" class="btn btn-secondary btn-elegant">Explore Features</a>
+        </div>
+
+        <div class="hero-image-wrapper">
+            <!-- Modern abstract mockup representing the app -->
+            <svg width="100%" height="auto" viewBox="0 0 1100 650" xmlns="http://www.w3.org/2000/svg"
+                style="display:block;">
+                <rect width="100%" height="100%" fill="var(--bg-secondary)" />
+
+                <!-- Sidebar -->
+                <rect x="0" y="0" width="240" height="650" fill="var(--bg-card)" stroke="var(--border)"
+                    stroke-width="1" />
+                <!-- Logo area -->
+                <circle cx="48" cy="48" r="16" fill="var(--accent)" opacity="0.8" />
+                <rect x="76" y="42" width="100" height="12" rx="6" fill="var(--text-primary)" opacity="0.7" />
+
+                <!-- Nav items -->
+                <rect x="24" y="100" width="192" height="40" rx="8" fill="var(--accent)" opacity="0.1" />
+                <rect x="36" y="114" width="12" height="12" rx="4" fill="var(--accent)" />
+                <rect x="60" y="114" width="80" height="12" rx="6" fill="var(--accent)" />
+
+                <rect x="36" y="164" width="12" height="12" rx="4" fill="var(--text-muted)" opacity="0.5" />
+                <rect x="60" y="164" width="90" height="10" rx="5" fill="var(--text-muted)" opacity="0.5" />
+
+                <rect x="36" y="204" width="12" height="12" rx="4" fill="var(--text-muted)" opacity="0.5" />
+                <rect x="60" y="204" width="70" height="10" rx="5" fill="var(--text-muted)" opacity="0.5" />
+
+                <rect x="36" y="244" width="12" height="12" rx="4" fill="var(--text-muted)" opacity="0.5" />
+                <rect x="60" y="244" width="100" height="10" rx="5" fill="var(--text-muted)" opacity="0.5" />
+
+                <!-- Main Content Header -->
+                <rect x="240" y="0" width="860" height="80" fill="var(--bg-secondary)" stroke="var(--border)"
+                    stroke-width="1" />
+                <rect x="280" y="30" width="180" height="20" rx="8" fill="var(--text-primary)" opacity="0.8" />
+                <circle cx="1020" cy="40" r="18" fill="var(--bg-card)" stroke="var(--border)" />
+
+                <!-- KPIs -->
+                <rect x="280" y="120" width="240" height="130" rx="16" fill="var(--bg-card)" stroke="var(--border)"
+                    stroke-width="1" />
+                <circle cx="316" cy="156" r="20" fill="var(--accent)" opacity="0.15" />
+                <rect x="280" y="210" width="120" height="24" rx="6" fill="var(--text-primary)"
+                    transform="translate(36, 0)" />
+                <rect x="280" y="242" width="80" height="10" rx="5" fill="var(--text-muted)"
+                    transform="translate(36, 0)" />
+
+                <rect x="540" y="120" width="240" height="130" rx="16" fill="var(--bg-card)" stroke="var(--border)"
+                    stroke-width="1" />
+                <circle cx="576" cy="156" r="20" fill="var(--success)" opacity="0.15" />
+                <rect x="540" y="210" width="140" height="24" rx="6" fill="var(--text-primary)"
+                    transform="translate(36, 0)" />
+                <rect x="540" y="242" width="70" height="10" rx="5" fill="var(--text-muted)"
+                    transform="translate(36, 0)" />
+
+                <rect x="800" y="120" width="240" height="130" rx="16" fill="var(--bg-card)" stroke="var(--border)"
+                    stroke-width="1" />
+                <circle cx="836" cy="156" r="20" fill="var(--warning)" opacity="0.15" />
+                <rect x="800" y="210" width="100" height="24" rx="6" fill="var(--text-primary)"
+                    transform="translate(36, 0)" />
+                <rect x="800" y="242" width="90" height="10" rx="5" fill="var(--text-muted)"
+                    transform="translate(36, 0)" />
+
+                <!-- Chart Area -->
+                <rect x="280" y="280" width="500" height="300" rx="16" fill="var(--bg-card)" stroke="var(--border)"
+                    stroke-width="1" />
+                <rect x="310" y="310" width="120" height="16" rx="6" fill="var(--text-primary)" opacity="0.8" />
+
+                <!-- Smooth Curve Chart -->
+                <path d="M 310 520 Q 360 480 400 500 T 500 420 T 600 380 T 700 320 T 750 360" fill="none"
+                    stroke="var(--accent)" stroke-width="6" stroke-linecap="round" />
+
+                <path d="M 310 520 Q 360 480 400 500 T 500 420 T 600 380 T 700 320 T 750 360 L 750 550 L 310 550 Z"
+                    fill="url(#gradientChart)" opacity="0.2" />
+
+                <defs>
+                    <linearGradient id="gradientChart" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="var(--accent)" />
+                        <stop offset="100%" stop-color="var(--bg-card)" />
+                    </linearGradient>
+                </defs>
+
+                <!-- Side panel for recent activity -->
+                <rect x="800" y="280" width="240" height="300" rx="16" fill="var(--bg-card)" stroke="var(--border)"
+                    stroke-width="1" />
+                <rect x="830" y="310" width="100" height="16" rx="6" fill="var(--text-primary)" opacity="0.8" />
+
+                <!-- Activity List -->
+                <circle cx="846" cy="370" r="16" fill="var(--bg-secondary)" />
+                <rect x="874" y="360" width="120" height="10" rx="5" fill="var(--text-primary)" />
+                <rect x="874" y="376" width="60" height="8" rx="4" fill="var(--text-muted)" />
+
+                <circle cx="846" cy="430" r="16" fill="var(--bg-secondary)" />
+                <rect x="874" y="420" width="90" height="10" rx="5" fill="var(--text-primary)" />
+                <rect x="874" y="436" width="70" height="8" rx="4" fill="var(--text-muted)" />
+
+                <circle cx="846" cy="490" r="16" fill="var(--bg-secondary)" />
+                <rect x="874" y="480" width="110" height="10" rx="5" fill="var(--text-primary)" />
+                <rect x="874" y="496" width="50" height="8" rx="4" fill="var(--text-muted)" />
+            </svg>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h4>10k+</h4>
+                <p>Active Users</p>
+            </div>
+            <div class="stat-item">
+                <h4>$2M+</h4>
+                <p>Expenses Tracked</p>
+            </div>
+            <div class="stat-item">
+                <h4>4.9/5</h4>
+                <p>App Rating</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="features-section">
+        <div class="section-header">
+            <span class="section-subtitle">Features</span>
+            <h2 class="section-title">Everything you need, beautifully designed</h2>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <span class="feature-icon">📊</span>
+                </div>
+                <h3 class="feature-title">Smart Dashboard</h3>
+                <p class="feature-desc">Get a bird's-eye view of your financial health. Visualize your spending patterns
+                    with interactive, gorgeous charts.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <span class="feature-icon">🤖</span>
+                </div>
+                <h3 class="feature-title">AI Financial Advisor</h3>
+                <p class="feature-desc">Receive personalized, AI-driven insights on how to save more money based on your
+                    actual spending habits and history.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <span class="feature-icon">🎯</span>
+                </div>
+                <h3 class="feature-title">Category Budgets</h3>
+                <p class="feature-desc">Set limits for Food, Transport, Housing, and more. We'll gently notify you when
+                    you're approaching your planned limits.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <span class="feature-icon">🔒</span>
+                </div>
+                <h3 class="feature-title">Bank-Grade Security</h3>
+                <p class="feature-desc">Your data is secured with advanced JWT authentication. We prioritize your
+                    privacy and data protection above all.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <span class="feature-icon">🌗</span>
+                </div>
+                <h3 class="feature-title">Immaculate Dark Mode</h3>
+                <p class="feature-desc">A deep, elegant dark theme designed to reduce eye strain, alongside a crisp,
+                    clean light mode. Switch instantly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <span class="feature-icon">⚡</span>
+                </div>
+                <h3 class="feature-title">Lightning Fast</h3>
+                <p class="feature-desc">Built with pure HTML, CSS, and modern API principles for instant load times and
+                    seamless, fluid interactions.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom CTA -->
+    <section class="cta-section">
+        <h2>Ready to transform your financial life?</h2>
+        <p>Join thousands of users who are already saving more money and tracking effortlessly with BudgetWise.</p>
+        <a href="signup.html" class="btn btn-primary btn-elegant" style="padding: 18px 40px; font-size: 1.1rem;">Create
+            Your Free Account</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="landing-logo" style="justify-content:center;font-size:1.2rem;margin-bottom:12px;">
+            <span class="logo-icon">💰</span> BudgetWise
+        </div>
+        <p>&copy; 2024 BudgetWise. All rights reserved.</p>
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script>
+        // Ensure theme toggle works on landing page
+        const toggleBtn = document.querySelector('.theme-toggle');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                const isDark = document.body.dataset.theme === 'dark';
+                const newTheme = isDark ? 'light' : 'dark';
+                document.body.dataset.theme = newTheme;
+                localStorage.setItem('bw_theme', newTheme);
+            });
+        }
+    </script>
+</body>
+
+</html>

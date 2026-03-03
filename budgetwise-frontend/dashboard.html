@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard — BudgetWise</title>
+    <meta name="description" content="Your personal finance dashboard with AI insights." />
+    <link rel="stylesheet" href="css/app.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div id="toast-container"></div>
+
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="logo-icon">💰</div>
+                <h2>BudgetWise</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-label">Menu</div>
+                <a href="dashboard.html" class="nav-item active"><span class="nav-icon">🏠</span> Dashboard</a>
+                <a href="expenses.html" class="nav-item"><span class="nav-icon">💸</span> Expenses</a>
+                <a href="budget.html" class="nav-item"><span class="nav-icon">📊</span> Budget</a>
+                <a href="advisor.html" class="nav-item"><span class="nav-icon">🤖</span> AI Advisor</a>
+                <a href="reports.html" class="nav-item"><span class="nav-icon">📈</span> Reports</a>
+                <div class="nav-section-label">Account</div>
+                <button class="nav-item w-full" onclick="logout()"
+                    style="background:none;border:none;width:100%;text-align:left;cursor:pointer;">
+                    <span class="nav-icon">🚪</span> Logout
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">BW</div>
+                    <div>
+                        <div class="user-name" id="userName">User</div>
+                        <div class="user-email" id="userEmail">—</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h3>Dashboard</h3>
+                    <p id="greetingText">Good morning 👋</p>
+                </div>
+                <div class="topbar-right">
+                    <button class="theme-toggle" title="Toggle theme">🌙</button>
+                    <button class="hamburger"
+                        onclick="document.getElementById('sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('visible')">☰</button>
+                </div>
+            </header>
+            <div class="sidebar-overlay"
+                onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('visible')">
+            </div>
+
+            <main class="page-content">
+                <!-- KPI Cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card accent">
+                        <div class="kpi-icon accent">💸</div>
+                        <div class="kpi-value" id="totalSpent">₹0.00</div>
+                        <div class="kpi-label">Spent This Month</div>
+                    </div>
+                    <div class="kpi-card success">
+                        <div class="kpi-icon success">💰</div>
+                        <div class="kpi-value" id="budgetLeft">₹—</div>
+                        <div class="kpi-label">Budget Remaining</div>
+                    </div>
+                    <div class="kpi-card warning">
+                        <div class="kpi-icon warning">📂</div>
+                        <div class="kpi-value" id="topCategory">—</div>
+                        <div class="kpi-label">Top Category</div>
+                    </div>
+                    <div class="kpi-card danger">
+                        <div class="kpi-icon danger">🧾</div>
+                        <div class="kpi-value" id="txnCount">0</div>
+                        <div class="kpi-label">Transactions</div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-title">📊 Spending by Category</div>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">📅 Daily Spending (This Month)</div>
+                        <canvas id="dailyChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent transactions -->
+                <div class="card" style="padding:24px;">
+                    <div class="page-header" style="margin-bottom:16px;">
+                        <h2 style="font-size:18px;">Recent Transactions</h2>
+                        <a href="expenses.html" class="btn btn-secondary btn-sm">View All →</a>
+                    </div>
+                    <div class="table-wrap">
+                        <table id="recentTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentBody">
+                                <tr>
+                                    <td colspan="4">
+                                        <div class="empty-state">
+                                            <div class="empty-icon">💳</div>
+                                            <p>No transactions yet. <a href="expenses.html"
+                                                    style="color:var(--accent)">Add your first expense →</a></p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>

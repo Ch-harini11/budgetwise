@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Budget — BudgetWise</title>
+    <link rel="stylesheet" href="css/app.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div id="toast-container"></div>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="logo-icon">💰</div>
+                <h2>BudgetWise</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-label">Menu</div>
+                <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+                <a href="expenses.html" class="nav-item"><span class="nav-icon">💸</span> Expenses</a>
+                <a href="budget.html" class="nav-item active"><span class="nav-icon">📊</span> Budget</a>
+                <a href="advisor.html" class="nav-item"><span class="nav-icon">🤖</span> AI Advisor</a>
+                <a href="reports.html" class="nav-item"><span class="nav-icon">📈</span> Reports</a>
+                <div class="nav-section-label">Account</div>
+                <button class="nav-item w-full" onclick="logout()"
+                    style="background:none;border:none;width:100%;text-align:left;cursor:pointer;"><span
+                        class="nav-icon">🚪</span> Logout</button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">BW</div>
+                    <div>
+                        <div class="user-name" id="userName">User</div>
+                        <div class="user-email" id="userEmail">—</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h3>Budget Planner</h3>
+                    <p>Set and track monthly budgets</p>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn btn-primary btn-sm" onclick="openBudgetModal()">⚙️ Set Budget</button>
+                    <button class="theme-toggle">🌙</button>
+                    <button class="hamburger"
+                        onclick="document.getElementById('sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('visible')">☰</button>
+                </div>
+            </header>
+            <div class="sidebar-overlay"
+                onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('visible')">
+            </div>
+
+            <main class="page-content">
+                <!-- Month selector -->
+                <div class="card" style="padding:16px 20px;margin-bottom:20px;">
+                    <div class="flex items-center gap-2">
+                        <label class="form-label" style="margin:0;">Month:</label>
+                        <input type="month" id="budgetMonth" class="form-input" style="width:180px;"
+                            onchange="loadBudget()" />
+                    </div>
+                </div>
+
+                <!-- Budget overview -->
+                <div id="budgetContent">
+                    <div class="empty-state">
+                        <div class="empty-icon">📊</div>
+                        <h3>No budget set</h3>
+                        <p>Click "Set Budget" to define your monthly spending limits.</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Budget Setup Modal -->
+    <div class="modal-overlay hidden" id="budgetModal">
+        <div class="modal" style="max-width:580px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Set Monthly Budget</h3>
+                <button class="modal-close" onclick="closeBudgetModal()">✕</button>
+            </div>
+            <form id="budgetForm" onsubmit="saveBudget(event)">
+                <div class="form-group">
+                    <label class="form-label">Total Monthly Budget (₹)</label>
+                    <input type="number" id="totalBudget" class="form-input" placeholder="e.g. 30000" min="1"
+                        required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="margin-bottom:12px;">Category Budgets (Optional)</label>
+                    <div id="categoryBudgets">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+                <div class="flex gap-1 mt-2">
+                    <button type="button" class="btn btn-secondary" style="flex:1"
+                        onclick="closeBudgetModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1" id="budgetSaveBtn">Save Budget</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/budget.js"></script>
+</body>
+
+</html>

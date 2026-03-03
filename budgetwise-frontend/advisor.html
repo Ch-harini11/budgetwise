@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Advisor — BudgetWise</title>
+    <link rel="stylesheet" href="css/app.css" />
+</head>
+
+<body>
+    <div id="toast-container"></div>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="logo-icon">💰</div>
+                <h2>BudgetWise</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-label">Menu</div>
+                <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+                <a href="expenses.html" class="nav-item"><span class="nav-icon">💸</span> Expenses</a>
+                <a href="budget.html" class="nav-item"><span class="nav-icon">📊</span> Budget</a>
+                <a href="advisor.html" class="nav-item active"><span class="nav-icon">🤖</span> AI Advisor</a>
+                <a href="reports.html" class="nav-item"><span class="nav-icon">📈</span> Reports</a>
+                <div class="nav-section-label">Account</div>
+                <button class="nav-item w-full" onclick="logout()"
+                    style="background:none;border:none;width:100%;text-align:left;cursor:pointer;"><span
+                        class="nav-icon">🚪</span> Logout</button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">BW</div>
+                    <div>
+                        <div class="user-name" id="userName">User</div>
+                        <div class="user-email" id="userEmail">—</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h3>AI Advisor 🤖</h3>
+                    <p>Personalized financial recommendations</p>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn btn-secondary btn-sm" onclick="loadTips()">🔄 Refresh</button>
+                    <button class="theme-toggle">🌙</button>
+                    <button class="hamburger"
+                        onclick="document.getElementById('sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('visible')">☰</button>
+                </div>
+            </header>
+            <div class="sidebar-overlay"
+                onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('visible')">
+            </div>
+
+            <main class="page-content">
+                <!-- AI Banner -->
+                <div class="card"
+                    style="padding:28px;margin-bottom:24px;background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.1));border-color:rgba(99,102,241,0.25);">
+                    <div class="flex items-center gap-2">
+                        <div style="font-size:48px;">🤖</div>
+                        <div>
+                            <h2 style="font-size:22px;margin-bottom:6px;">Your AI Financial Advisor</h2>
+                            <p style="color:var(--text-secondary);font-size:14px;">Based on your spending patterns this
+                                month, here are personalized insights to help you reach your financial goals.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tips Grid -->
+                <div class="tips-grid" id="tipsGrid">
+                    <div class="empty-state">
+                        <div class="empty-icon">⏳</div>
+                        <p>Loading your personalized tips...</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/advisor.js"></script>
+</body>
+
+</html>
